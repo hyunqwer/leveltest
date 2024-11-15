@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <title>진단평가 개인 링크 전송</title>
+    <style>
+        .content { padding: 20px; font-family: Arial, sans-serif; }
+        .h2 { font-size: 1.5em; font-weight: bold; margin: 15px 0; }
+        .tableLayout_wrap, .tableLayout_wrap_second { margin-top: 20px; }
+        .sll_input_dl { display: flex; gap: 10px; align-items: center; margin: 10px 0; }
+        .box_1, .select_4, .url_input { padding: 5px; width: 150px; }
+        .userButton { padding: 5px 10px; background-color: #007bff; color: white; border: none; cursor: pointer; }
+        .share_icon2 { display: flex; gap: 10px; align-items: center; margin: 10px 0; }
+        .ui-jqgrid { border-collapse: collapse; width: 100%; margin-top: 20px; }
+        .ui-jqgrid th, .ui-jqgrid td { border: 1px solid #ddd; padding: 8px; text-align: center; }
+        .ui-pager-control { display: flex; justify-content: center; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+<div class="content">
+    <!-- Title and Description -->
+    <div class="tableLayout_wrap">
+        <div class="sll">
+            <dl>
+                <dt class="sll_text">
+                    <div class="h2">진단평가 개인 링크 전송</div>
+                    정보 입력 후 전송 버튼을 누르면 해당 응시자가 1회 응시할 수 있는 개인별 링크가 전송됩니다.<br>
+                    실제 학년과 다른 수준의 시험을 보고 싶으면 응시 수준을 조정하세요. 응시 화면에는 실제 학년만 표기됩니다.
+                </dt>
+            </dl>
+
+            <!-- Input Fields and Send Button -->
+            <dl class="sll_input_dl">
+                <dt class="sll_input_dl_fst">
+                    <span class="sll_span">이름</span>
+                    <input type="text" id="sendLinkList_name" class="box_1" placeholder="이름을 입력해 주세요.">
+                    <span class="sll_span">학년</span>
+                    <select id="sendLinkList_year" class="select_4">
+                        <option selected value="">선택</option>
+                        <option value="0">미취학</option>
+                        <option value="1">초등1</option>
+                        <!-- Add other options as needed -->
+                    </select>
+                    <span class="sll_span">응시수준</span>
+                    <select id="sendLinkList_year_level" class="select_4">
+                        <option selected value="">선택</option>
+                        <option value="Y01">미취학</option>
+                        <option value="E01">초등1</option>
+                        <!-- Add other options as needed -->
+                    </select>
+                </dt>
+                <dt class="sll_input_dl_sec">
+                    <span class="sll_span">연락처</span>
+                    <input type="text" id="sendLinkList_phone" class="box_1 sll_phone" placeholder="연락처를 입력해주세요. 예)010-1234-5678">
+                    <button class="userButton next" type="button" id="sendLinkList_submit"><span>전송</span></button>
+                </dt>
+            </dl>
+
+            <!-- Open Link Section -->
+            <dl>
+                <div class="h2">오픈 링크</div>
+                <span>소스 모집을 위해 아래 링크 주소를 복사하여 배포할 수 있습니다. 링크를 클릭한 다음 이름, 학년, 전화번호를 넣고 시험을 응시합니다.</span>
+                <div class="share_icon2">
+                    <div style="display:flex; align-items:center;">
+                        <div class="linkname" style="margin-top: 2px;">링크주소</div>
+                        <div>
+                            <input type="text" class="url_input" readonly id="sendLinkList_linkURL">
+                        </div>
+                    </div>
+                    <i style="cursor: pointer;" id="sendLinkList_copyURL" data-clipboard-action="copy" data-clipboard-target=""></i>
+                </div>
+            </dl>
+
+            <!-- Results Section -->
+            <div class="h2">링크 전송 결과 확인</div>
+            <span style="float:right; margin-top:-10px;">*진단 결과는 [진단 회원 관리] 메뉴에서 확인하세요.</span>
+        </div>
+    </div>
+
+    <!-- Table Layout for Results -->
+    <div class="tableLayout_wrap_second">
+        <table class="ui-jqgrid">
+            <thead>
+                <tr>
+                    <th>이름</th>
+                    <th>연락처</th>
+                    <th>전송일</th>
+                    <th>응시일</th>
+                    <th>완료여부</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>진단차</td>
+                    <td>010-5759-3659</td>
+                    <td>2024-11-14 10:15:52</td>
+                    <td>2024-11-14 10:16:25</td>
+                    <td>X</td>
+                </tr>
+                <!-- Add more rows as needed -->
+            </tbody>
+        </table>
+
+        <!-- Pagination Control -->
+        <div class="ui-pager-control">
+            <button>첫 페이지</button>
+            <button>이전 페이지</button>
+            <span>페이지 <input type="text" value="1" size="2"> / 23</span>
+            <button>다음 페이지</button>
+            <button>마지막 페이지</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
