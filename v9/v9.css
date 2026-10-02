@@ -168,3 +168,17 @@ body{background:#fff;}
 .rpt_v9 .sumbox .sr .tx{flex:1;min-width:0;}
 .rpt_v9 .sumbox .sr .tx b{display:block;color:#333;font-weight:700;}
 .rpt_v9 .sumbox .sr .tx p{margin:0;color:#555;}
+
+/* v9: 2p 상하 채우기 */
+.rpt_v9 .p2.v2c{display:flex;flex-direction:column;min-height:500px;}
+.rpt_v9 .p2.v2c dl{flex:none;}
+.rpt_v9 .p2.v2c .pboxes{flex:1;margin-top:18px;}
+.rpt_v9 .p2.v2c .pboxes .pbox{display:flex;flex-direction:column;justify-content:flex-start;font-size:13px;line-height:1.75;padding:16px 18px;}
+.rpt_v9 .p2.v2c .pboxes .pbox b{font-size:13.5px;margin-bottom:6px;}
+.rpt_v9 .p2.v2c .pboxes .pbox p{-webkit-line-clamp:4;}
+.rpt_v9 .cd{padding:18px 16px 16px;}
+.rpt_v9 .cd .hd{height:22px;font-size:13px;}
+.rpt_v9 .cd .lv{margin-top:10px;font-size:20px;}
+.rpt_v9 .cd .mb{margin:22px 0 8px;height:13px;}
+.rpt_v9 .cd .rw{margin-top:14px;padding-top:13px;font-size:12px;}
+.rpt_v9 .cd .rw b{font-size:16px;}

@@ -2,13 +2,13 @@
 """인쇄(A4 세로 1장) 버전: v8 1p + 2p(C1 또는 C2). gen_v8의 마크업 함수를 재사용하고 .prt 범위 CSS로 축소 배치."""
 import os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-import gen_v9 as g
+import gen_v8 as g
 OUT=g.OUT; S=g.S; NM=g.NM
 HDR=open(os.path.join(os.path.dirname(os.path.abspath(__file__)),'hdr.b64')).read().strip()  # 현행 인쇄본 헤더 캡처(660×102)
 PRT_CSS=r'''
 @page{size:A4 portrait;margin:0}
 body{background:#eee;margin:0}
-.prt{box-sizing:border-box;width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:0 67px 44px;display:flex;flex-direction:column;font-family:"Noto Sans KR","Noto Sans CJK KR","Malgun Gothic",sans-serif;color:#333;position:relative}
+.prt{box-sizing:border-box;width:794px;min-height:1123px;margin:0 auto;background:#fff;padding:0 67px 20px;font-family:"Noto Sans KR","Noto Sans CJK KR","Malgun Gothic",sans-serif;color:#333;position:relative}
 @media print{body{background:#fff}.prt{margin:0;box-shadow:none}.mk_bar{display:none}}
 .prt .bars{display:flex;justify-content:space-between;height:5px}
 .prt .bars i{display:block;width:170px;height:5px;background:#ef7c00}.prt .bars i+i{background:#e64545;width:140px}
@@ -19,7 +19,7 @@ body{background:#eee;margin:0}
 .prt .info{display:flex;margin-top:6px;border:1px solid #e3e3e3;border-radius:4px;overflow:hidden}
 .prt .info div{flex:1;height:30px;line-height:30px;font-size:12px;padding:0 10px;background:#fff}.prt .info div+div{border-left:1px solid #e3e3e3}
 .prt .info span{color:#888;margin-right:8px;font-size:11px}.prt .info b{font-weight:700}
-.prt .st{position:relative;margin:24px 0 9px;padding-left:9px;font-size:13px;font-weight:800;line-height:18px}
+.prt .st{position:relative;margin:22px 0 8px;padding-left:9px;font-size:13px;font-weight:800;line-height:18px}
 .prt .st::before{content:'';position:absolute;left:0;top:2px;width:3px;height:14px;background:#333}
 .prt .st .level{display:inline-block;margin-left:10px;height:24px;line-height:21px;border:2px solid #e64545;border-radius:100px;color:#e64545;font-size:12.5px;padding:0 11px;vertical-align:middle}
 .prt .st .cue{margin-left:8px;font-size:11px;color:#888;font-weight:400}
@@ -33,34 +33,34 @@ body{background:#eee;margin:0}
 .prt .ytb td.bgred{background:#e64545;color:#fff;font-weight:700}
 .prt .ytb col:first-child{width:52px}
 /* 2단 */
-.prt .two{display:flex;gap:18px;align-items:stretch;min-height:330px}
+.prt .two{display:flex;gap:18px;align-items:stretch}
 .prt .colL{flex:0 0 250px}.prt .colR{flex:1;min-width:0;display:flex;flex-direction:column}
-.prt .dns{display:grid;grid-template-columns:1fr 1fr;gap:10px 0;margin-top:2px}
-.prt .dn{position:relative;display:flex;flex-direction:column;align-items:center;padding:24px 0 4px}
+.prt .dns{display:grid;grid-template-columns:1fr 1fr;gap:4px 0;margin-top:2px}
+.prt .dn{position:relative;display:flex;flex-direction:column;align-items:center;padding:20px 0 2px}
 .prt .dn .tags{position:absolute;left:50%;top:6px;transform:translateX(-50%);z-index:2;white-space:nowrap}
 .prt .dn .tg{display:inline-block;padding:0 5px;height:15px;line-height:12px;border-radius:3px;font-size:8.5px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545}
 .prt .dn .ring{position:relative;width:104px;height:104px}.prt .dn .ring svg{display:block;width:104px;height:104px}
 .prt .dn .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15}
 .prt .dn .ctr .nm{font-size:12px;color:#555}.prt .dn .ctr strong{font-size:20px;font-weight:800;color:#333;letter-spacing:-.5px}
-.prt .bell{display:block;width:100%;height:auto;margin-top:0}
+.prt .bell{display:block;width:100%;height:auto;margin-top:2px}
 .prt .arert{margin-top:auto;display:flex;gap:8px;align-items:flex-start;padding:10px 14px;border:1px solid #c9d3e0;border-radius:5px;background:#eef3fa;font-size:12.5px;line-height:19px}
 .prt .arert b{color:#e64545;font-weight:700}
 .prt .arert::before{content:'';flex:none;width:18px;height:18px;border-radius:50%;background:#333 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23fff' d='M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z'/></svg>") center/12px no-repeat}
 /* 카드 */
 .prt .cds{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.prt .cd{padding:16px 12px 14px;border:1px solid #e0e0e0;border-top:3px solid var(--c);border-radius:4px}
+.prt .cd{padding:11px 10px 9px;border:1px solid #e0e0e0;border-top:3px solid var(--c);border-radius:4px}
 .prt .cd .hd2{display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--c);height:16px}
 .prt .cd .tg{display:inline-block;margin-left:5px;padding:0 4px;height:14px;line-height:11px;border-radius:3px;font-size:8px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545}
-.prt .cd .lv{margin-top:9px;font-size:17px;font-weight:800;color:#333;letter-spacing:-.3px;white-space:nowrap}
-.prt .cd .mb{position:relative;height:11px;margin:20px 0 8px;border-radius:0 5px 5px 0;background:#f1f1f1}
+.prt .cd .lv{margin-top:7px;font-size:15.5px;font-weight:800;color:#333;letter-spacing:-.3px;white-space:nowrap}
+.prt .cd .mb{position:relative;height:10px;margin:13px 0 4px;border-radius:0 5px 5px 0;background:#f1f1f1}
 .prt .cd .mb .fill{position:absolute;left:0;top:0;height:100%;border-radius:0 5px 5px 0;background:var(--c);opacity:.9}
 .prt .cd .mb .av{position:absolute;top:-4px;width:0;height:0;margin-left:-4px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:8px solid #555}
 .prt .cd .avl{margin-top:4px;font-size:9.5px;color:#888;white-space:nowrap}
-.prt .cd .rw{display:flex;align-items:baseline;gap:4px;margin-top:12px;padding-top:12px;border-top:1px dashed #e6e6e6;font-size:10px;color:#888;white-space:nowrap}
+.prt .cd .rw{display:flex;align-items:baseline;gap:4px;margin-top:8px;padding-top:8px;border-top:1px dashed #e6e6e6;font-size:10px;color:#888;white-space:nowrap}
 .prt .cd .rw span{flex:none;min-width:26px;margin-right:2px}.prt .cd .rw b{font-size:14px;font-weight:800;color:#333}.prt .cd .rw b.pos{color:#e64545}.prt .cd .rw small{font-size:9.5px;color:#999}
 /* 하단 박스 */
-.prt .pboxes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;flex:1;max-height:230px}
-.prt .pbox{display:flex;flex-direction:column;justify-content:flex-start;padding:16px 14px;border:1.5px solid var(--bc);border-radius:5px;background:var(--bg);font-size:12.5px;line-height:1.75;color:#444}
+.prt .pboxes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.prt .pbox{padding:11px 12px;border:1.5px solid var(--bc);border-radius:5px;background:var(--bg);font-size:12px;line-height:1.7;color:#444}
 .prt .pbox.c-lr{grid-column:span 2}.prt .pbox b{display:block;margin-bottom:3px;font-size:11.5px;color:var(--bc)}
 .prt .c-p{--bc:#ef7c00;--bg:#fff7ee}.prt .c-lr{--bc:#2e9e5b;--bg:#eef9f1}.prt .c-g{--bc:#7b5aa3;--bg:#f3eef9}
 .prt .sumbox{margin-top:14px;padding:14px 18px;border:1.5px solid #c9d3e0;border-radius:5px;background:#f4f7fb;font-size:12.5px;line-height:1.8;color:#444}
@@ -104,22 +104,8 @@ def page(variant):
             '<p class="st">영역별 진단·처방<span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></p><div class="cds">'+''.join(card_p(a) for a in 'PLRG')+'</div>'
             +bottom+
             '<p class="foot">※ 동학년 대비 위치는 전국 동학년 응시자 기준이며, 2페이지 처방 문구는 '+('현행 샘플(자리표시)' if variant=='c1' else '현행 샘플(자리표시)')+'입니다.</p></div>')
-for v,title in (('c1','v9'),):
-    html=(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>진단평가 리포트 v9 — 인쇄용</title>'
+for v,title in (('c1','C1 영역 박스'),('c2','C2 종합 처방')):
+    html=(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>진단평가 리포트 v8 인쇄용 — {title}</title>'
           f'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap"><style>{PRT_CSS}</style></head><body>{page(v)}</body></html>')
-    open(os.path.join(OUT,'print.html'),'w',encoding='utf-8').write(html)
+    open(os.path.join(OUT,f'print_{v}.html'),'w',encoding='utf-8').write(html)
 print('print ok')
-
-# ---- index.html: 1p / 2p / 인쇄용 탭 하나로 ----
-TABJS="<script>document.querySelectorAll('.mk_bar a[data-t]').forEach(a=>{a.onclick=e=>{e.preventDefault();document.querySelectorAll('.mk_bar a[data-t]').forEach(x=>x.classList.remove('on'));a.classList.add('on');document.querySelectorAll('section.mk_page').forEach(s=>s.style.display=s.id===a.dataset.t?'':'none');};});</script>"
-dots='<div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>'
-secs=(f'<section class="mk_page" id="p1">{g.header(S["name"],S["grade"],S["date"])}{g.page1()}{dots}</section>'
-      f'<section class="mk_page" id="p2" style="display:none">{g.header(S["name"],S["grade"],S["date"])}{g.page2c()}{dots}</section>'
-      f'<section class="mk_page" id="pr" style="display:none">{page("c1")}</section>')
-idx=(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>진단평가 리포트 v9</title>{g.CSSLINKS}'
-     f'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap"><style>{g.CSS}{PRT_CSS}'
-     'body{background:#fff}.mk_bar a.on{border-color:#e64545;color:#e64545;font-weight:700}#pr{background:#eee;padding:20px 0}#pr .prt{box-shadow:0 2px 12px rgba(0,0,0,.12)}</style></head><body>'
-     '<nav class="mk_bar"><strong>진단평가 리포트 · v9</strong><a href="#" data-t="p1" class="on">1페이지</a><a href="#" data-t="p2">2페이지</a><a href="#" data-t="pr">인쇄용 (A4)</a>'
-     '<span class="hint">초4 전 영역 · 2025.08.27 응시 · 점수·수준·위치 실제값 · 2p 처방 문구는 현행 샘플(자리표시)</span></nav>'
-     f'{secs}{TABJS}</body></html>')
-open(os.path.join(OUT,'index.html'),'w',encoding='utf-8').write(idx); print('index ok')
