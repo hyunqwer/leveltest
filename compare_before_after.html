@@ -1,0 +1,214 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>진단평가 1p — 현행 vs v7 (초4 전 영역, 예시 학생 A)</title><link rel="stylesheet" href="https://leveltest.yoons.com/css/common.css?v=1.0"><link rel="stylesheet" href="https://leveltest.yoons.com/css/w_reset.css?v=1.0"><link rel="stylesheet" href="https://leveltest.yoons.com/css/w_base.css?v=1.27"><link rel="stylesheet" href="https://leveltest.yoons.com/css/w_media.css?v=1.2"><style>/* ===== v6b (위치 → 영역 → 시작점) — 기존 서비스 CSS 뒤에 추가, .rpt_v7 범위 한정 ===== */
+body{background:#fff;}
+.mk_bar{position:sticky;top:0;z-index:100;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 14px;background:#f7f7f7;border-bottom:1px solid #ccc;font-size:12px;}
+.mk_bar strong{margin-right:6px;font-size:13px;}
+.mk_bar a{padding:4px 9px;border:1px solid #ccc;border-radius:5px;background:#fff;color:#333;text-decoration:none;}
+.mk_bar a.on{border-color:#e64545;color:#e64545;font-weight:700;}
+.mk_bar .hint{margin-left:auto;color:#888;font-size:11px;}
+.mk_page{position:relative;margin:0 0 40px;}
+.mk_page .rep{width:1024px;margin:0 auto;}
+.mk_page .rep > .content{height:600px;overflow:hidden;}
+.mk_dots{position:absolute;left:0;right:0;bottom:24px;text-align:center;font-size:0;}
+.mk_dots i{display:inline-block;width:10px;height:10px;margin:0 3px;border-radius:50%;background:#ccc;}
+.mk_dots i.on{background:#e64545;}
+#header .reportInfo_wrap > dl dd{display:inline-block;width:260px;height:36px;border:1px solid #fff;margin:0 8px;font-size:14px;border-radius:5px;}
+@media print{.mk_bar{display:none}.mk_page{break-after:page;margin:0;zoom:.9}.mk_page:last-child{break-after:auto}@page{size:A4 landscape;margin:8mm}}
+@media screen and (max-width:1050px){.mk_page{overflow-x:auto;}}
+.rpt_v7 table{border-collapse:collapse;border-spacing:0;}
+.rpt_v7 dl dt{display:flex;align-items:center;height:32px;margin:0;}
+.rpt_v7 dt .sub{margin-left:8px;font-size:11px;color:#999;}
+
+/* 1. 동학년 대비 위치 (히어로) */
+.rpt_v7 .hero{display:flex;gap:26px;align-items:stretch;margin-top:6px;}
+.rpt_v7 .rank_box{flex:none;width:250px;display:flex;flex-direction:column;justify-content:center;align-items:center;text-align:center;padding:12px 14px;border:1px solid #d2d2d2;border-top:2px solid #333;}
+.rpt_v7 .rank_box .lb{font-size:13px;color:#666;}
+.rpt_v7 .rank_box .rk{margin-top:2px;color:#e64545;font-weight:800;line-height:1.05;white-space:nowrap;}
+.rpt_v7 .rank_box .rk small{font-size:18px;font-weight:700;margin-right:4px;}
+.rpt_v7 .rank_box .rk strong{font-size:50px;letter-spacing:-1.5px;}
+.rpt_v7 .rank_box .rk strong.txt{font-size:30px;letter-spacing:-.5px;}
+.rpt_v7 .rank_box .rk em{font-style:normal;font-size:26px;}
+.rpt_v7 .band_pill{display:inline-block;margin-top:8px;padding:0 14px;height:24px;line-height:24px;border-radius:100px;font-size:13px;font-weight:700;color:#fff;background:#6b7c93;}
+.rpt_v7 .band_pill.hi{background:#e64545;} .rpt_v7 .band_pill.lo{background:#9aa5b1;}
+.rpt_v7 .ruler_col{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;padding:0 8px;}
+.rpt_v7 .ruler{position:relative;padding:34px 0 26px;}
+.rpt_v7 .ruler .bands{display:flex;height:30px;border-radius:5px;overflow:hidden;}
+.rpt_v7 .ruler .bands span{display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#8a949f;}
+.rpt_v7 .ruler .bands .lo{width:20%;background:#efefef;} .rpt_v7 .ruler .bands .mid{width:60%;background:#e2e8ef;color:#667;} .rpt_v7 .ruler .bands .hi{width:20%;background:#fbe0e0;color:#d24b4b;}
+.rpt_v7 .ruler .ticks{position:absolute;left:0;right:0;top:70px;height:14px;font-size:10px;color:#aaa;}
+.rpt_v7 .ruler .ticks span{position:absolute;transform:translateX(-50%);white-space:nowrap;}
+.rpt_v7 .ruler .ticks span:first-child{transform:none;} .rpt_v7 .ruler .ticks span:last-child{transform:translateX(-100%);}
+.rpt_v7 .ruler .ticks span::before{content:"";position:absolute;left:50%;top:-4px;width:1px;height:4px;background:#ccc;}
+.rpt_v7 .ruler .pin{position:absolute;top:0;transform:translateX(-50%);z-index:2;}
+.rpt_v7 .ruler .pin .tip{position:relative;height:24px;line-height:24px;padding:0 10px;border-radius:4px;background:#e64545;color:#fff;font-size:12px;font-weight:700;white-space:nowrap;}
+.rpt_v7 .ruler .pin .tip::after{content:"";position:absolute;left:50%;bottom:-5px;margin-left:-5px;border:5px solid transparent;border-bottom:0;border-top-color:#e64545;}
+.rpt_v7 .ruler .pin .stem{width:3px;height:40px;margin:2px auto 0;background:#e64545;border-radius:2px;}
+.rpt_v7 .ruler_col .cap{margin-top:4px;font-size:11px;color:#999;text-align:right;}
+.rpt_v7 .sec1 .arert_wrap{margin-top:12px;line-height:20px;padding:7px 20px 7px 45px;min-height:0;font-size:13px;width:100%;float:none;}
+.rpt_v7 .arert_wrap b{color:#e64545;font-weight:700;}
+
+/* 2. 영역별 성취수준 카드 */
+.rpt_v7 .sec2{margin-top:22px;}
+.rpt_v7 .cards{display:flex;gap:14px;margin-top:6px;}
+.rpt_v7 .card{flex:1;min-width:0;padding:10px 14px 9px;border:1px solid #e0e0e0;border-top:3px solid var(--c);border-radius:4px;background:#fff;}
+.rpt_v7 .card .hd{display:flex;align-items:center;font-size:13px;font-weight:700;color:#333;}
+.rpt_v7 .card .hd i{display:inline-block;width:8px;height:8px;margin-right:6px;border-radius:50%;background:var(--c);}
+.rpt_v7 .card .hd .tg{margin-left:auto;padding:0 7px;height:18px;line-height:18px;border-radius:3px;font-size:10px;font-weight:700;color:#fff;}
+.rpt_v7 .card .hd .tg.hi{background:#e64545;} .rpt_v7 .card .hd .tg.lo{background:#8a97a8;}
+.rpt_v7 .card .sc{margin-top:6px;line-height:1;color:#333;}
+.rpt_v7 .card .sc strong{font-size:26px;font-weight:800;color:var(--c);}
+.rpt_v7 .card .sc small{margin-left:4px;font-size:11px;color:#999;}
+.rpt_v7 .card .rw{display:flex;justify-content:space-between;margin-top:7px;padding-top:6px;border-top:1px dashed #e6e6e6;font-size:11px;color:#888;}
+.rpt_v7 .card .rw b{color:#333;font-weight:700;font-size:12px;}
+
+/* 3. 시작점 (작게) */
+.rpt_v7 .sec3{margin-top:22px;}
+.rpt_v7 .sec3 dl dt{height:34px;}
+.rep.rpt_v7 > .content .sec3 .level_section dt span.level{height:28px;line-height:26px;font-size:14px;margin-left:12px;padding:0 14px;}
+.rpt_v7 .sec3 dt .why{margin-left:auto;font-size:11px;color:#777;float:none;}
+.rpt_v7 .sec3 dt .why b{color:#e64545;}
+.rpt_v7 .sec3 .tableLayout_wrap{padding-top:6px;}
+.rep.rpt_v7 > .content .sec3 .level_section dd th{font-size:12px;height:26px;}
+.rep.rpt_v7 > .content .sec3 .level_section dd tr.height30{height:26px;}
+.rep.rpt_v7 > .content .sec3 .level_section dd td{font-size:12px;line-height:22px;padding:1px 0;}
+.rep.rpt_v7 > .content .sec3 .level_section dd td.bgred{background-color:#e64545;color:#fff;font-weight:700;}
+.rep.rpt_v7 > .content .sec3 .level_section dd td.borderright{border-right:1px solid #ccc;}
+.rep.rpt_v7 > .content .sec3 dt span.level{display:inline-block;height:28px;line-height:26px;border-radius:100px;border:2px solid #e64545;color:#e64545;font-weight:700;font-size:14px;margin-left:12px;padding:0 14px;vertical-align:middle;}
+.rpt_v7 .sec1 .arert_wrap{margin-top:10px;}
+.rpt_v7 .sec2{margin-top:16px;}
+.rpt_v7 .card{padding:8px 14px 8px;}
+.rpt_v7 .sec3{margin-top:16px;}
+.rpt_v7 .ruler{padding:32px 0 22px;}
+
+/* v6c: 시작점 섹션을 맨 위로 */
+.rpt_v7 .sec3{margin-top:0;margin-bottom:22px;}
+.rpt_v7 .sec1{margin-top:0;}
+.rpt_v7 .sec2{margin-top:18px;}
+
+/* ===== v6d: 큰 숫자 박스 삭제, 하단 2단(카드 | 눈금자) ===== */
+.rpt_v7 .sec3{margin-bottom:18px;}
+.rpt_v7 .two{display:flex;gap:26px;align-items:stretch;}
+.rpt_v7 .colL{flex:0 0 560px;} .rpt_v7 .colR{flex:1;min-width:0;display:flex;flex-direction:column;}
+.rpt_v7 .colR dd{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.rpt_v7 .cards{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:6px;}
+.rpt_v7 .card{padding:8px 13px 8px;}
+.rpt_v7 .card .sc strong{font-size:24px;}
+.rpt_v7 .ruler_col{padding:0 4px;}
+.rpt_v7 .ruler{padding:36px 0 24px;}
+.rpt_v7 .ruler .bands{height:32px;}
+.rpt_v7 .ruler .bands span{font-size:12px;}
+.rpt_v7 .ruler .pin .tip{font-size:12px;height:24px;line-height:24px;}
+.rpt_v7 .ruler .pin .stem{height:42px;}
+.rpt_v7 .ruler .ticks{top:72px;}
+.rpt_v7 .ruler_col .cap{text-align:left;line-height:1.5;margin-top:2px;}
+.rpt_v7 .colR .arert_wrap{margin-top:12px;line-height:19px;padding:7px 14px 7px 42px;min-height:0;font-size:12px;width:100%;float:none;}
+/* 여백 배분 */
+.rpt_v7 .sec3{margin-bottom:30px;}
+.rep.rpt_v7 > .content .sec3 .level_section dd tr.height30{height:32px;}
+.rep.rpt_v7 > .content .sec3 .level_section dd td{font-size:13px;line-height:28px;}
+.rpt_v7 .cards{gap:14px;margin-top:10px;}
+.rpt_v7 .card{padding:11px 14px 10px;}
+.rpt_v7 .card .rw{margin-top:8px;padding-top:7px;}
+.rpt_v7 .ruler{padding:40px 0 26px;}
+.rpt_v7 .ruler .bands{height:36px;}
+.rpt_v7 .ruler .ticks{top:80px;}
+.rpt_v7 .colR .arert_wrap{margin-top:16px;line-height:20px;font-size:12.5px;}
+
+/* ===== v6e: 원그래프 성취도 (현행 스타일) + 도달·위치 두 줄 ===== */
+.rpt_v7 .colL{flex:0 0 540px;}
+.rpt_v7 .dns{display:grid;grid-template-columns:1fr 1fr;gap:10px 0;margin-top:4px;}
+.rpt_v7 .dn{position:relative;display:flex;flex-direction:column;align-items:center;padding:4px 0 2px;}
+.rpt_v7 .dn .tags{position:absolute;left:calc(50% + 40px);top:6px;display:flex;flex-direction:column;gap:3px;align-items:flex-start;}
+.rpt_v7 .dn .tg{padding:0 7px;height:18px;line-height:18px;border-radius:3px;font-size:10px;font-weight:700;color:#fff;white-space:nowrap;}
+.rpt_v7 .dn .tg.st{background:#fff;color:#e64545;border:1.5px solid #e64545;line-height:15px;}
+.rpt_v7 .dn .tg.hi{background:#e64545;} .rpt_v7 .dn .tg.lo{background:#8a97a8;}
+.rpt_v7 .dn .ring{position:relative;width:104px;height:104px;}
+.rpt_v7 .dn .ring svg{display:block;}
+.rpt_v7 .dn .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;}
+.rpt_v7 .dn .ctr .nm{font-size:12px;color:#555;}
+.rpt_v7 .dn .ctr strong{font-size:19px;font-weight:800;color:#333;letter-spacing:-.5px;}
+.rpt_v7 .dn .rw{display:flex;gap:6px;align-items:baseline;font-size:11px;color:#888;line-height:1.5;}
+.rpt_v7 .dn .rw b{color:#333;font-weight:700;font-size:12px;}
+.rpt_v7 .dn .rw:first-of-type{margin-top:4px;}
+.rpt_v7 .dcap{margin-top:6px;font-size:10.5px;color:#aaa;text-align:center;}
+/* 성취도 폭 축소(원본 300px 수준) · 눈금자 확대 */
+.rpt_v7 .colL{flex:0 0 340px;}
+.rpt_v7 .two{gap:30px;}
+.rpt_v7 .dns{gap:6px 0;}
+.rpt_v7 .dn{padding:20px 0 2px;}
+.rpt_v7 .dn .ring{width:96px;height:96px;}
+.rpt_v7 .dn .ring svg{width:96px;height:96px;}
+.rpt_v7 .dn .tags{left:auto;right:6px;top:0;flex-direction:row;gap:3px;}
+.rpt_v7 .dn .tg{height:17px;line-height:17px;font-size:9.5px;padding:0 6px;}
+.rpt_v7 .dn .tg.st{line-height:14px;}
+.rpt_v7 .dn .ctr strong{font-size:18px;}
+.rpt_v7 .dcap{font-size:10px;}
+.rpt_v7 .ruler_col{padding:0 10px;}
+.rpt_v7 .ruler{padding:44px 0 28px;}
+.rpt_v7 .ruler .bands{height:40px;}
+.rpt_v7 .ruler .bands span{font-size:13px;}
+.rpt_v7 .ruler .ticks{top:88px;font-size:11px;}
+.rpt_v7 .ruler .pin .tip{font-size:13px;height:26px;line-height:26px;padding:0 12px;}
+.rpt_v7 .ruler .pin .stem{height:48px;}
+.rpt_v7 .ruler_col .cap{font-size:11.5px;}
+.rpt_v7 .colR .arert_wrap{font-size:13px;line-height:21px;margin-top:20px;}
+/* 우측 컬럼: 좌측 성취도 높이에 맞춰 눈금자(가운데)·총평(하단) 배치 */
+.rpt_v7 .colR dd{justify-content:flex-start;}
+.rpt_v7 .colR .ruler_col{flex:1;justify-content:center;padding:0 10px 6px;}
+.rpt_v7 .ruler{padding:48px 0 30px;}
+.rpt_v7 .ruler .bands{height:44px;}
+.rpt_v7 .ruler .ticks{top:94px;}
+.rpt_v7 .ruler .pin .stem{height:52px;}
+.rpt_v7 .ruler_col .cap{margin-top:6px;}
+.rpt_v7 .colR .arert_wrap{margin-top:auto;margin-bottom:22px;}
+.rpt_v7 .colR dl{flex:1;display:flex;flex-direction:column;}
+.rpt_v7 .colR .arert_wrap{margin-bottom:18px;}
+
+/* ===== v7 추가 ===== */
+.rpt_v7 .sec3 dt .cue{margin-left:10px;font-size:12px;color:#888;}
+.rpt_v7 .ruler .ticks span.l{transform:none;} .rpt_v7 .ruler .ticks span.l::before{left:0;}
+.rpt_v7 .ruler .ticks span.r{transform:translateX(-100%);} .rpt_v7 .ruler .ticks span.r::before{left:auto;right:0;}
+.rpt_v7 .dns{padding-bottom:8px;}
+.rpt_v7 .dns.n1{grid-template-columns:1fr;} .rpt_v7 .dns.n1 .dn{padding-top:40px;}
+.rpt_v7 .dns.n2{grid-template-columns:1fr 1fr;align-content:center;}
+.rpt_v7 .dns.n3 .dn:nth-child(3){grid-column:1 / span 2;}
+.rpt_v7 .ph_table{margin-top:0;}
+.rpt_v7 .ph_table table{border-top:2px solid #293138;}
+.rpt_v7 .ph_table table th{width:auto;height:30px;font-size:13px;}
+.rep.rpt_v7 > .content .sec3 .level_section dd .ph_table td{font-size:12px;line-height:22px;padding:1px 0;}
+.rpt_v7 .sec3.dual .tableLayout_wrap + .tableLayout_wrap{margin-top:10px;}
+.rpt_v7 .sec3.dual dt span.level + span.level{margin-left:8px;}
+.rpt_v7 .sec3.dual{margin-bottom:16px;}
+.mk_tag{width:1024px;margin:6px auto 0;padding:0 20px;font-size:11px;color:#999;}
+.mk_bar a[data-t]{cursor:pointer;}
+/* 나의 위치 섹션 높이 고정: 영역 수와 무관하게 4개 기준(358px) 유지 */
+.rpt_v7 .two{min-height:358px;}
+.rpt_v7 .colL{display:flex;flex-direction:column;}
+.rpt_v7 .colL dl{flex:1;display:flex;flex-direction:column;}
+.rpt_v7 .colL dd{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.rpt_v7 .dns.n1 .dn{padding-top:20px;}
+.rpt_v7 .sec3.dual + .two{min-height:300px;}
+.rpt_v7 .dns.n1 .dn .tags{right:calc(50% - 100px);}
+
+/* 비교 페이지 */
+.cmp_label{width:1024px;margin:26px auto 8px;font-size:15px;font-weight:800;color:#333;display:flex;align-items:center;gap:10px;}
+.cmp_label b{display:inline-block;padding:2px 10px;border-radius:4px;color:#fff;font-size:12px;}
+.cmp_label b.bf{background:#8a97a8;} .cmp_label b.af{background:#e64545;}
+.cmp_label small{font-weight:400;color:#888;font-size:12px;margin-left:auto;}
+.cmp_note{width:1024px;margin:10px auto 30px;padding:12px 18px;border:1px solid #e6e6e6;border-radius:5px;background:#fafafa;font-size:12px;color:#555;line-height:1.7;}
+.cmp_note b{color:#e64545;}
+/* 현행 모사 */
+.rpt_old table{border-collapse:collapse;border-spacing:0;}
+.rpt_old .obottom{display:flex;gap:30px;margin-top:26px;}
+.rpt_old .oleft{flex:0 0 300px;} .rpt_old .oright{flex:1;min-width:0;}
+.rpt_old .otitle{position:relative;padding-left:10px;font-size:12px;font-weight:800;color:#333;line-height:30px;}
+.rpt_old .otitle::before{content:'';position:absolute;left:0;top:9px;width:3px;height:13px;background:#e64545;}
+.rpt_old .odn{display:grid;grid-template-columns:1fr 1fr;gap:8px 0;margin-top:4px;}
+.rpt_old .od{position:relative;width:118px;height:118px;margin:0 auto;}
+.rpt_old .od .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;}
+.rpt_old .od .ctr span{font-size:12px;color:#555;} .rpt_old .od .ctr strong{font-size:18px;font-weight:800;color:#333;}
+.rpt_old .bandlab{display:flex;margin-top:6px;font-size:13px;color:#999;}
+.rpt_old .bandlab span{flex:1;text-align:center;}
+.rpt_old .bell{display:block;margin-top:4px;width:100%;height:auto;border:1px solid #ddd;}
+.rpt_old .oarert{margin:26px 0 0 330px;width:calc(100% - 330px);float:none;line-height:20px;padding:8px 20px 8px 45px;font-size:12.5px;}
+.rpt_old .oarert em{font-style:normal;color:#aaa;font-size:11px;}
+</style></head><body><nav class="mk_bar"><strong>진단평가 리포트 1p · 현행 vs 개선안 v7</strong><span class="hint">같은 학생(초4 · 2025.08.27 응시 · 파닉스 75 · 듣말 84.6 · 읽쓰 60 · 문법 70)</span></nav><div class="cmp_label"><b class="bf">BEFORE</b>현행 리포트 1p<small>위치 = 낮은 영역(읽기/쓰기 4.5단계) 기준 · 2022.11 기준표 · 상위 50.2% = 5등급</small></div><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2025.08.27</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 A</span></dd><dd><span>학년</span><span>초등 4</span></dd></dl></div></div></div><div class="rep rpt_old"><div class="content"><div class="slide_pa"><div class="asidetop_wrap"><div class="level_section"><dl><dt><span class="title">나의 레벨</span><span class="level">Rising Star 초4</span></dt><dd><div class="tableLayout_wrap"><table style="width:100%;table-layout:fixed"><colgroup><col style="width:69px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"></colgroup><tr><th rowspan="2">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All Star</th><th>MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td class="">초1</td><td class="borderright">초2</td><td class="">초3</td><td class="bgred borderright">초4</td><td class="">초5</td><td class="borderright">초6</td><td class="borderright">예비중</td><td class="">1</td><td class="">2</td><td class="">3</td><td class="">4</td><td class="">5</td><td class="">6</td><td class="">7</td><td class="">8</td><td class="">9</td></tr></table></div></dd></dl></div></div><div class="obottom"><div class="oleft"><p class="otitle">영역별 성취도</p><div class="odn"><div class="od"><svg viewBox="0 0 120 120" width="118" height="118"><circle cx="60" cy="60" r="52" fill="none" stroke="#e6e6e6" stroke-width="9"/><circle cx="60" cy="60" r="52" fill="none" stroke="#ef7c00" stroke-width="9" stroke-dasharray="245.0 326.7" transform="rotate(-90 60 60)"/></svg><div class="ctr"><span>파닉스</span><strong>75점</strong></div></div><div class="od"><svg viewBox="0 0 120 120" width="118" height="118"><circle cx="60" cy="60" r="52" fill="none" stroke="#e6e6e6" stroke-width="9"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0a953d" stroke-width="9" stroke-dasharray="276.4 326.7" transform="rotate(-90 60 60)"/></svg><div class="ctr"><span>듣기/말하기</span><strong>84.6점</strong></div></div><div class="od"><svg viewBox="0 0 120 120" width="118" height="118"><circle cx="60" cy="60" r="52" fill="none" stroke="#e6e6e6" stroke-width="9"/><circle cx="60" cy="60" r="52" fill="none" stroke="#0078bf" stroke-width="9" stroke-dasharray="196.0 326.7" transform="rotate(-90 60 60)"/></svg><div class="ctr"><span>읽기/쓰기</span><strong>60점</strong></div></div><div class="od"><svg viewBox="0 0 120 120" width="118" height="118"><circle cx="60" cy="60" r="52" fill="none" stroke="#e6e6e6" stroke-width="9"/><circle cx="60" cy="60" r="52" fill="none" stroke="#7b5aa3" stroke-width="9" stroke-dasharray="228.7 326.7" transform="rotate(-90 60 60)"/></svg><div class="ctr"><span>문법</span><strong>70점</strong></div></div></div></div><div class="oright"><p class="otitle">나의 위치</p><div class="bandlab"><span>Below Average</span><span>Average</span><span>Above Average</span></div><svg class="bell" viewBox="0 0 620 200" width="620" height="200"><line x1="595.2" y1="0" x2="595.2" y2="180" stroke="#ddd"/><line x1="551.8" y1="0" x2="551.8" y2="180" stroke="#ddd"/><line x1="477.4" y1="0" x2="477.4" y2="180" stroke="#ddd"/><line x1="372.0" y1="0" x2="372.0" y2="180" stroke="#ddd"/><line x1="248.0" y1="0" x2="248.0" y2="180" stroke="#ddd"/><line x1="142.6" y1="0" x2="142.6" y2="180" stroke="#ddd"/><line x1="68.2" y1="0" x2="68.2" y2="180" stroke="#ddd"/><line x1="24.8" y1="0" x2="24.8" y2="180" stroke="#ddd"/><polyline points="0,178.01548256552664 4,177.78273323043467 8,177.5262518415144 12,177.2440741671193 16,176.93412761525343 20,176.59423147432037 24,176.22209800191675 28,175.81533444706196 32,175.3714460908722 36,174.88784038923376 40,174.361832298403 44,173.79065086057378 48,173.17144712122027 52,172.50130344337646 56,171.77724427589837 60,170.99624842312684 64,170.15526285221245 68,169.2512180616744 72,168.28104502057 76,167.24169367199391 80,166.13015297758557 84,164.9434724613978 88,163.67878519200306 92,162.3333321212449 96,160.90448767676935 100,159.3897864836145 104,157.78695106793668 108,156.09392037368485 112,154.30887890098913 116,152.4302862535231 120,150.4569068614627 124,148.38783962723892 128,146.22254722342385 132,143.96088475614866 136,141.60312749378605 140,139.14999734957775 144,136.60268779878095 148,133.9628869060534 152,131.23279813747382 156,128.41515863405002 160,125.51325463000556 164,122.53093370971658 168,119.47261361200205 172,116.34328730960303 176,113.14852411511093 180,109.89446659224794 184,106.58782308312423 188,103.23585569769041 192,99.84636365079447 196,96.4276618746969 200,92.98855488019386 204,89.53830588717341 208,86.08660129496526 212,82.64351061366352 216,79.219442029089 220,75.82509382555943 224,72.47140194147393 228,69.16948398219961 232,65.93058006217176 236,62.765990892788594 240,59.68701357392352 244,56.70487558403917 248,53.83066749635873 252,51.075274975774164 256,48.44931063264707 260,45.96304632495941 264,43.626346509048886 268,41.4486032411578 272,39.43867342706062 276,37.604818905049825 280,35.95464992857276 284,34.495072588963154 288,33.232240686224486 292,32.17151251703626 296,31.317413004491613 300,30.673601544055145 304,30.24284588545055 308,30.027002311324935 312,30.027002311324935 316,30.24284588545055 320,30.673601544055145 324,31.317413004491613 328,32.17151251703626 332,33.232240686224515 336,34.49507258896318 340,35.954649928572735 344,37.604818905049825 348,39.43867342706062 352,41.4486032411578 356,43.626346509048886 360,45.96304632495941 364,48.44931063264707 368,51.075274975774136 372,53.83066749635873 376,56.70487558403917 380,59.68701357392352 384,62.765990892788594 388,65.93058006217179 392,69.16948398219958 396,72.47140194147391 400,75.82509382555943 404,79.219442029089 408,82.64351061366352 412,86.08660129496529 416,89.53830588717345 420,92.98855488019382 424,96.42766187469685 428,99.84636365079447 432,103.23585569769041 436,106.58782308312423 440,109.89446659224797 444,113.14852411511094 448,116.34328730960301 452,119.47261361200205 456,122.53093370971658 460,125.51325463000556 464,128.41515863405002 468,131.23279813747382 472,133.96288690605337 476,136.60268779878095 480,139.14999734957775 484,141.60312749378605 488,143.96088475614866 492,146.22254722342385 496,148.38783962723892 500,150.4569068614627 504,152.4302862535231 508,154.30887890098913 512,156.09392037368485 516,157.78695106793668 520,159.3897864836145 524,160.90448767676935 528,162.33333212124487 532,163.67878519200306 536,164.9434724613978 540,166.13015297758557 544,167.24169367199391 548,168.28104502057 552,169.25121806167442 556,170.15526285221245 560,170.99624842312684 564,171.77724427589837 568,172.50130344337646 572,173.17144712122027 576,173.79065086057378 580,174.36183229840296 584,174.88784038923376 588,175.3714460908722 592,175.81533444706196 596,176.22209800191675 600,176.59423147432037 604,176.93412761525343 608,177.2440741671193 612,177.5262518415144 616,177.78273323043467 620,178.01548256552664" fill="none" stroke="#bbb" stroke-width="2"/><line x1="0" y1="180" x2="620" y2="180" stroke="#999"/><line x1="308.8" y1="10" x2="308.8" y2="180" stroke="#e64545" stroke-width="1.5"/><circle cx="308.8" cy="180" r="4" fill="#e64545"/><rect x="270.8" y="52" width="76" height="24" rx="4" fill="#e64545"/><text x="308.8" y="69" font-size="12" font-weight="700" text-anchor="middle" fill="#fff">상위 50.2%</text><text x="12.4" y="196" font-size="11" text-anchor="middle" fill="#555">9등급</text><text x="46.5" y="196" font-size="11" text-anchor="middle" fill="#555">8등급</text><text x="105.4" y="196" font-size="11" text-anchor="middle" fill="#555">7등급</text><text x="195.3" y="196" font-size="11" text-anchor="middle" fill="#555">6등급</text><text x="310.0" y="196" font-size="11" text-anchor="middle" fill="#555">5등급</text><text x="424.7" y="196" font-size="11" text-anchor="middle" fill="#555">4등급</text><text x="514.6" y="196" font-size="11" text-anchor="middle" fill="#555">3등급</text><text x="573.5" y="196" font-size="11" text-anchor="middle" fill="#555">2등급</text><text x="607.6" y="196" font-size="11" text-anchor="middle" fill="#555">1등급</text></svg></div></div><div class="arert_wrap oarert"><span></span>동학년 대비 상위 50.2%로 평균 수준의 실력입니다. 꾸준한 학습으로 실력을 더 키워 보세요. <em>(총평 문구는 현행 템플릿 추정)</em></div></div></div></div></section><div class="cmp_label"><b class="af">AFTER</b>개선안 v7<small>위치 = 응시 4영역 합계 스케일 기준 · 최근 3년 창 · 상위 41.8% · 평균 구간</small></div><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2025.08.27</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 A</span></dd><dd><span>학년</span><span>초등 4</span></dd></dl></div></div></div><div class="rep rpt_v7"><div class="content"><div class="slide_pa"><div class="sec3"><div class="level_section"><dl><dt><span class="title">나에게 맞는 학습 시작점</span><span class="level">Rising Star 초4</span><span class="cue">읽기/쓰기 기준</span></dt><dd><div class="tableLayout_wrap"><table style="width:100%;table-layout:fixed"><colgroup><col style="width:69px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"><col style="width:57px"></colgroup><tr><th rowspan="2">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th>MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td class="">초1</td><td class="borderright">초2</td><td class="">초3</td><td class="bgred borderright">초4</td><td class="">초5</td><td class="borderright">초6</td><td class="borderright">예비중</td><td class="">1</td><td class="">2</td><td class="">3</td><td class="">4</td><td class="">5</td><td class="">6</td><td class="">7</td><td class="">8</td><td class="">9</td></tr></table></div></dd></dl></div></div><div class="two"><div class="colL"><dl><dt><span class="title">나의 영역별 성취수준</span></dt><dd><div class="dns n4"><div class="dn" style="--c:#ef7c00"><span class="tags"></span><div class="ring"><svg viewBox="0 0 110 110" width="96" height="96"><circle cx="55" cy="55" r="44" fill="none" stroke="#e9e9e9" stroke-width="9"/><circle cx="55" cy="55" r="44" fill="none" stroke="#ef7c00" stroke-width="9" stroke-linecap="round" stroke-dasharray="207.3 276.5" transform="rotate(-90 55 55)"/></svg><div class="ctr"><span class="nm">파닉스</span><strong>75점</strong></div></div><div class="rw"><span>수준</span><b>장모음</b></div><div class="rw"><span>위치</span><b>상위 73%</b></div></div><div class="dn" style="--c:#0a953d"><span class="tags"><b class="tg hi">강점</b></span><div class="ring"><svg viewBox="0 0 110 110" width="96" height="96"><circle cx="55" cy="55" r="44" fill="none" stroke="#e9e9e9" stroke-width="9"/><circle cx="55" cy="55" r="44" fill="none" stroke="#0a953d" stroke-width="9" stroke-linecap="round" stroke-dasharray="233.9 276.5" transform="rotate(-90 55 55)"/></svg><div class="ctr"><span class="nm">듣기/말하기</span><strong>84.6점</strong></div></div><div class="rw"><span>수준</span><b>All-Star 초6</b></div><div class="rw"><span>위치</span><b>상위 15%</b></div></div><div class="dn" style="--c:#0078bf"><span class="tags"><b class="tg st">시작점 기준</b></span><div class="ring"><svg viewBox="0 0 110 110" width="96" height="96"><circle cx="55" cy="55" r="44" fill="none" stroke="#e9e9e9" stroke-width="9"/><circle cx="55" cy="55" r="44" fill="none" stroke="#0078bf" stroke-width="9" stroke-linecap="round" stroke-dasharray="165.9 276.5" transform="rotate(-90 55 55)"/></svg><div class="ctr"><span class="nm">읽기/쓰기</span><strong>60점</strong></div></div><div class="rw"><span>수준</span><b>Rising Star 초4</b></div><div class="rw"><span>위치</span><b>상위 44%</b></div></div><div class="dn" style="--c:#7b5aa3"><span class="tags"></span><div class="ring"><svg viewBox="0 0 110 110" width="96" height="96"><circle cx="55" cy="55" r="44" fill="none" stroke="#e9e9e9" stroke-width="9"/><circle cx="55" cy="55" r="44" fill="none" stroke="#7b5aa3" stroke-width="9" stroke-linecap="round" stroke-dasharray="193.5 276.5" transform="rotate(-90 55 55)"/></svg><div class="ctr"><span class="nm">문법</span><strong>70점</strong></div></div><div class="rw"><span>수준</span><b>All-Star 초5</b></div><div class="rw"><span>위치</span><b>상위 44%</b></div></div></div></dd></dl></div><div class="colR"><dl><dt><span class="title">동학년 대비 나의 위치</span></dt><dd><div class="ruler_col"><div class="ruler"><div class="pin" style="left:58.2%"><div class="tip">상위 42% · 평균</div><div class="stem"></div></div><div class="bands"><span class="lo">평균 이하</span><span class="mid">평균</span><span class="hi">평균 이상</span></div><div class="ticks"><span class="l" style="left:0">100%</span><span style="left:20%">80%</span><span style="left:80%">20%</span><span class="r" style="left:100%">1%</span></div></div><p class="cap">파닉스 · 듣기/말하기 · 읽기/쓰기 · 문법 종합<br>전국 초4 응시자 기준</p></div><div class="arert_wrap"><span></span>초4 응시자 중 <b>상위 42%</b>로, <b>평균 구간</b>이에요. 듣기/말하기가 강점이에요. <b>Rising Star 초4</b> 단계 <b>읽기/쓰기</b> 영역 교재부터 학습을 시작하세요.</div></dd></dl></div></div></div></div></div></section><div class="cmp_note"><b>같은 점수인데 달라지는 것</b><br>· 위치값: 현행은 듣말·읽쓰 중 낮은 읽기/쓰기(4.5단계) 하나로 50.2%, 개선안은 응시한 4영역을 합쳐 41.8%. 듣기/말하기(초6 수준)가 반영됨.<br>· 표기: 9등급 벨커브 → 3구간(평균 이하 / 평균 / 평균 이상) 눈금자. 상위 80% 초과는 수치 대신 "상위 80% 이하".<br>· 영역별: 점수만 → 점수 + 수준(도달 단계) + 동학년 위치. 강점·시작점 기준 라벨.<br>· 총평: 위치값 한 가지로 생성 → 위치 + 강점 + 시작 교재(단계·영역) 3문장.<br>· 레이아웃(시작점 위 / 성취도 좌 / 위치 우)과 단계표·원그래프는 그대로.</div></body></html>
