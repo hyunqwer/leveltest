@@ -109,3 +109,17 @@ for v,title in (('c1','v9'),):
           f'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap"><style>{PRT_CSS}</style></head><body>{page(v)}</body></html>')
     open(os.path.join(OUT,'print.html'),'w',encoding='utf-8').write(html)
 print('print ok')
+
+# ---- index.html: 1p / 2p / 인쇄용 탭 하나로 ----
+TABJS="<script>document.querySelectorAll('.mk_bar a[data-t]').forEach(a=>{a.onclick=e=>{e.preventDefault();document.querySelectorAll('.mk_bar a[data-t]').forEach(x=>x.classList.remove('on'));a.classList.add('on');document.querySelectorAll('section.mk_page').forEach(s=>s.style.display=s.id===a.dataset.t?'':'none');};});</script>"
+dots='<div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>'
+secs=(f'<section class="mk_page" id="p1">{g.header(S["name"],S["grade"],S["date"])}{g.page1()}{dots}</section>'
+      f'<section class="mk_page" id="p2" style="display:none">{g.header(S["name"],S["grade"],S["date"])}{g.page2c()}{dots}</section>'
+      f'<section class="mk_page" id="pr" style="display:none">{page("c1")}</section>')
+idx=(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>진단평가 리포트 v9</title>{g.CSSLINKS}'
+     f'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap"><style>{g.CSS}{PRT_CSS}'
+     'body{background:#fff}.mk_bar a.on{border-color:#e64545;color:#e64545;font-weight:700}#pr{background:#eee;padding:20px 0}#pr .prt{box-shadow:0 2px 12px rgba(0,0,0,.12)}</style></head><body>'
+     '<nav class="mk_bar"><strong>진단평가 리포트 · v9</strong><a href="#" data-t="p1" class="on">1페이지</a><a href="#" data-t="p2">2페이지</a><a href="#" data-t="pr">인쇄용 (A4)</a>'
+     '<span class="hint">초4 전 영역 · 2025.08.27 응시 · 점수·수준·위치 실제값 · 2p 처방 문구는 현행 샘플(자리표시)</span></nav>'
+     f'{secs}{TABJS}</body></html>')
+open(os.path.join(OUT,'index.html'),'w',encoding='utf-8').write(idx); print('index ok')
