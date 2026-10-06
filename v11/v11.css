@@ -16,8 +16,10 @@ body{background:#fff;}
 /* ① 시작점 큐 (화면: 배지 옆 회색 작은 글씨) */
 .rep .level_section dt .v11cue{margin-left:10px;font-size:12px;color:#888;font-weight:400;vertical-align:middle;}
 /* ② 시작점 기준 태그 (원그래프 위) — 차트 div 크기는 그대로, 래퍼만 추가 */
-.v11g{position:relative;float:left;width:50%;}
-.v11g > div{width:100% !important;}
+.v11gs{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;height:100%;}
+.v11g{position:relative;width:50%;flex:0 0 50%;}
+.v11gs.n4 .v11g:nth-child(-n+2),.v11gs.n3 .v11g:nth-child(-n+2){margin-bottom:8px;}
+.printerv3 .v11gs.n4 .v11g:nth-child(-n+2),.printerv3 .v11gs.n3 .v11g:nth-child(-n+2){margin-bottom:7px;}
 .v11g .v11tag{position:absolute;left:50%;top:2px;transform:translateX(-50%);z-index:5;padding:0 6px;height:17px;line-height:14px;border-radius:3px;font-size:9.5px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545;white-space:nowrap;}
 /* ③ 총평 두 줄 허용 */
 .rep .arert_wrap b{color:#e64545;font-weight:700;}
@@ -51,3 +53,17 @@ body{background:#fff;}
 /* 인쇄 YES4.0 표: 칸 줄바꿈 방지 (현행 인쇄본과 동일하게 한 줄) */
 .printerv3 .sec_1 .tableLayout_wrap table td{white-space:nowrap;padding:6px 2px;}
 .printerv3 .sec_1 .tableLayout_wrap table th{padding:6px 2px;}
+/* 영역 조합별 */
+.mk_bar .grp{font-size:11px;color:#999;margin-right:2px;}
+.mk_bar2{top:37px;background:#fff;}
+.rep .level_section dt span.level+span.level{margin-left:8px;}
+.rep .v11dual .tableLayout_wrap table+table{margin-top:6px;}
+.rep .v11dual .tableLayout_wrap table th{height:22px;line-height:22px;font-size:12px;}
+.rep .v11dual .tableLayout_wrap table tr.height30{height:26px;}
+.rep .v11dual .tableLayout_wrap table td{line-height:24px;padding:0;font-size:12px;}
+.rep .v11ph th,.rep .v11ph td{text-align:center;white-space:nowrap;overflow:hidden;}
+/* 인쇄: 미응시 열 빈칸(현행 .blank 패턴) + 빈 처방 박스 */
+.printerv3 .v11sec3 .cd.blankcol{position:relative;border:0;background:none;padding:0;}
+.printerv3 .v11sec3 .cd.blankcol .blank{position:static;height:100%;min-height:182px;width:100%;background:url('https://leveltest.yoons.com/images/icon/blank_pattern.png');text-align:center;font-weight:700;font-size:0.7rem;padding-top:70px;}
+.printerv3 .v11sec3 .cd.blankcol .blank > div{margin-top:5px;}
+.printerv3 .v11sec3 .info_area.empty{min-height:120px;}

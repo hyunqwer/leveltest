@@ -4,8 +4,9 @@
       기존과 동일하게 유지하고, 내용(섹션명·시작점 큐·태그·눈금·총평)만 교체. 2p와 인쇄 하단은 v10 구성.
 
 파일
- - index.html   1p / 2p / 인쇄용 탭 통합 (GitHub Pages: https://hyunqwer.github.io/leveltest/v11/)
- - 1p.html / 2p.html / print.html   개별 파일
+ - index.html   응시 조합 7종 × (1p / 2p) + 인쇄용(초4 전 영역 1종) 탭 통합 (GitHub Pages: https://hyunqwer.github.io/leveltest/v11/)
+ - 1p.html / 2p.html / print.html   초4 전 영역 개별 파일
+ - samples.json  샘플 7종 실 응시 기록(v7과 동일: 초4 전영역 / 초1 P+L+R / 초6 전영역·평균이하 / 중1 L+R+G / 고1 전영역 / 초3 P만 / 초4 P+G)
  - gen_v11.py   생성 스크립트 (python gen_v11.py 한 번으로 4개 파일 생성)
  - v11.css      추가 CSS(변경 요소 + 인쇄 하단 v10 구성)  ·  v10parts.py / v10.css  2p용(v10 그대로)
  - 서비스 리소스는 웹에서 로드: /css/common.css, w_reset.css, w_base.css, w_media.css, /Highcharts-6.0.3/*, /images/icon/printer_logo_1.png
@@ -36,3 +37,13 @@
    evaluationPrintPreview.js의 차트 옵션에서 위 ①②③만 바꾸면 됨.
  - 데이터: 파닉스 75%(9/12) 장모음 / 듣말 84.6%(11/13) All-Star 초6 / 읽쓰 60%(6/10) Rising Star 초4 / 문법 70%(7/10) All-Star 초5
    종합 상위 41.8%(B_LS+RW+P+G) / 학년 평균(초4): 장모음 / All-Star 초5 / Rising Star 초4 / Rising Star 초4
+
+영역 조합별 처리
+ - 시작점: 듣말·읽쓰 포함 → YES4.0 표 + "○○ 기준" 큐 / 파닉스+문법 → 문법 기준(YES4.0 표, 큐 "문법 기준", 태그는 문법 원에만) /
+   파닉스만 → 파닉스 단계표(초등 7칸, 중고등 4칸) + 큐 "메인 커리큘럼 레벨은 듣기/말하기·읽기/쓰기 응시 시 제공". 총평 마지막 문장도 조합별.
+ - 원그래프(300×260 상자 고정): 4개 2×2 / 3개 아랫줄 가운데 / 2개 상하 가운데 / 1개 상하좌우 가운데 (.v11gs flex).
+ - 2p: 응시 영역 수만큼 카드(1~3개 모두 가운데 정렬), 처방 박스는 P / 듣말·읽쓰 / G 중 해당 조합만.
+ - 인쇄용: 미응시 열은 현행처럼 빈칸 패턴 + "해당 영역에 응시하지 않았습니다." + 빈 색 박스 (PRINT_KEY=샘플키 로 검증 가능).
+ - 학년 평균 단계(2p ▼): 초4는 확인값, 그 외 학년은 진단평가_학년별_영역평균SCALE.xlsx 평균을 v3 기준표로 환산한 추정값(AVG_BY_GRADE) → 확인 필요.
+ - 처방 문구는 모든 샘플에 동일한 현행 샘플(자리표시)을 넣었음(중·고등 샘플 문구 불일치는 자리표시 때문).
+ - 중1 L+R+G 종합 위치는 B_LS+RW(문법 제외·임시) — LS+RW+G 조합 기준표 숙제.

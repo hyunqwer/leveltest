@@ -173,17 +173,22 @@ def summary_text():
     s3=f'<b>{S["start"]["level"]} {NM[by]}</b> 교재부터 시작하면 '+(f'{strong} 강점을 살리면서 ' if strong else '')+f'{NM[by].split("/")[0]}·{NM[by].split("/")[-1]}를 끌어올릴 수 있어요. 자세한 학습 계획은 선생님 상담에서 안내드려요.'
     return s1,s2,s3
 def card(a):
-    x=S['area'][a]; n=7 if a=='P' else 16; name=x['stage'] if a=='P' else x['level']
+    x=S['area'][a]; n=(4 if S.get('mid') else 7) if a=='P' else 16; name=x['stage'] if a=='P' else x['level']
     fill=x['cellpos']/n*100; av=AVG[a]['cellpos']/n*100
-    tg='<b class="tg st">시작점 기준</b>' if a==S['start']['by'] else ''
+    tg='<b class="tg st">시작점 기준</b>' if a in (S['start'].get('by'),S['start'].get('by2')) else ''
     return (f'<div class="cd" style="--c:{COL[a]}"><div class="hd"><span class="nm">{NM[a]}</span>{tg}</div><div class="lv">{name}</div>'
             f'<div class="mb"><i class="fill" style="width:{fill:.1f}%"></i><i class="av" style="left:{av:.1f}%"></i></div>'
             f'<div class="rw"><span>정답률</span><b>{x["score"]:g}%</b><small>{x["k"]} / {x["n"]}문항</small></div></div>')
 def page2c():
     """C1: 카드 파닉스→듣말→읽쓰→문법, 하단 박스 폭을 카드 폭에 맞춤(파닉스 1칸 / 듣말·읽쓰 2칸 / 문법 1칸)"""
-    cards=''.join(card(a) for a in 'PLRG')
-    bx=('<div class="pboxes g4">'+''.join(f'<div class="pbox {cls}"><b>{BOX[k][0]}</b><p>{BOX[k][1]}</p></div>' for k,cls in (('P','c-p'),('LR','c-lr'),('G','c-g')))+'</div>')
-    body=('<div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span>'+legend()+'</dt><dd><div class="cds">'+cards+'</div></dd></dl>'+bx+'</div>')
+    pres=[a for a in 'PLRG' if a in S['area']]; n=len(pres)
+    cards=''.join(card(a) for a in pres)
+    keys=[k for k,need in (('P',['P']),('LR',['L','R']),('G',['G'])) if any(a in S['area'] for a in need)]
+    span={'P':1,'LR':sum(1 for a in 'LR' if a in S['area']),'G':1}
+    cls={'P':'c-p','LR':'c-lr','G':'c-g'}
+    narrow=('max-width:%dpx;margin-left:auto;margin-right:auto;'%(n*300+(14 if n==2 else 0))) if n<=2 else ''
+    bx=(f'<div class="pboxes g4" style="grid-template-columns:repeat({n},1fr);{narrow}">'+''.join(f'<div class="pbox {cls[k]}" style="grid-column:span {span[k]}"><b>{BOX[k][0]}</b><p>{BOX[k][1]}</p></div>' for k in keys)+'</div>')
+    body=(f'<div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span>'+legend()+f'</dt><dd><div class="cds" style="{narrow}">'+cards+'</div></dd></dl>'+bx+'</div>')
     return f'<div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa">{body}</div></div></div>'
 def sumbox_c1():
     """C2: C1의 영역별 처방 3개를 한 박스에 행으로 정리(시작 교재 안내는 1p 총평에만 두고 여기선 반복하지 않음)"""

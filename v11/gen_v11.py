@@ -7,7 +7,7 @@ HERE=os.path.dirname(os.path.abspath(__file__))
 OUT=os.environ.get('OUT',os.path.expanduser('~/mnt/leveltest/진단평가리포트업글_codex/ys_report_mockups_v11_service'))
 os.makedirs(OUT,exist_ok=True)
 import v10parts as v10
-S=v10.S; NM=v10.NM; COL=v10.COL; BOX=v10.BOX; AVG=v10.AVG
+NM=v10.NM; COL=v10.COL; BOX=v10.BOX
 HOST=os.environ.get('HOST','https://leveltest.yoons.com')
 LOCAL=os.environ.get('LOCAL')   # 로컬 렌더 검증용: CSS/JS 경로 치환
 def css_links():
@@ -17,11 +17,53 @@ def hc_scripts():
     base=os.environ.get('HCBASE',HOST+'/Highcharts-6.0.3')
     return (f'<script src="{base}/highcharts.js"></script><script src="{base}/highcharts-more.js"></script><script src="{base}/modules/solid-gauge.js"></script>')
 V11CSS=open(os.path.join(HERE,'v11.css'),encoding='utf-8').read()
-# ---------- 데이터 ----------
-pos=S['pos']; by=S['start']['by']
+# ---------- 샘플(영역 조합별) ----------
 ptxt=v10.ptxt; band=v10.band
-pin=min(pos,90)
-areas=[(a,NM[a],COL[a],S['area'][a]['score']) for a in 'PLRG']
+YES=['초1','초2','초3','초4','초5','초6','예비중','1','2','3','4','5','6','7','8','9']
+PH_E=['알파벳','자음','단모음','장모음','기타자음','기타모음','Master']; PH_M=['Beginner','Intermediate','Advanced','Master']
+def lvfix(s): return str(s).replace('All Star','All-Star')
+def cell_of(level):
+    s=lvfix(level)
+    for k in YES[:7]:
+        if s.endswith(k): return k
+    return s.split()[-1]
+# 학년 평균 단계(진단평가_학년별_영역평균SCALE.xlsx 학년별 평균 → v3 기준표 환산; 초4는 사용자 확인값, 그 외는 추정)
+AVG_BY_GRADE={'초등 1':{'P':'장모음','L':'Rookie 초2','R':'Rookie 초2','G':'Rookie 초2'},
+              '초등 3':{'P':'장모음','L':'Rising Star 초4','R':'Rising Star 초3','G':'Rising Star 초3'},
+              '초등 4':{'P':'장모음','L':'All-Star 초5','R':'Rising Star 초4','G':'Rising Star 초4'},
+              '초등 6':{'P':'자음','L':'MVP 예비중','R':'All-Star 초6','G':'All-Star 초6'},
+              '중등 1':{'P':'Intermediate','L':'중고등 2','R':'중고등 1','G':'중고등 1'},
+              '고등 1':{'P':'Intermediate','L':'중고등 5','R':'중고등 4','G':'중고등 2'}}
+GR={'초등 1':'초1','초등 3':'초3','초등 4':'초4','초등 6':'초6','중등 1':'중1','고등 1':'고1'}
+def convert(raw,key):
+    """samples.json(v7 형식) → v10/v11 S 형식"""
+    g=raw['grade']; mid=not g.startswith('초'); ph=PH_M if mid else PH_E
+    area={}
+    for a,x in raw['area'].items():
+        if a=='P': cp=ph.index(x['stage'])+1
+        else: cp=YES.index(cell_of(x['level']))+1
+        area[a]={'stage':x['stage'],'level':lvfix(x.get('level','')),'score':x['score'],'k':x['k'],'n':x['n'],'pos':x['pos'],'cellpos':cp}
+    st=raw['start']
+    if st.get('by')=='P' and st.get('by2')=='G':   # 파닉스+문법 → 시작점은 문법 기준(파닉스 표 없음)
+        start={'by':'G','level':lvfix(st['level2']),'cell':cell_of(st['level2'])}
+    else:
+        start={'by':st['by'],'level':lvfix(st['level'])}
+        if st['by'] in ('L','R','G'): start['cell']=cell_of(st['level'])
+    avg={}
+    for a,lab in AVG_BY_GRADE[g].items():
+        idx=(ph.index(lab) if a=='P' else YES.index(cell_of(lab)))
+        avg[a]={'label':lab,'cellpos':idx+0.5}
+    names={'e4_all':'예시 학생 A','e1_plr':'예시 학생 B','e6_all_low':'예시 학생 C','m1_lrg':'예시 학생 D','h1_all':'예시 학생 E','e3_p':'예시 학생 F','e4_pg':'예시 학생 G'}
+    return {'key':key,'name':names.get(key,'예시 학생'),'grade':g,'gr':GR[g],'date':raw['date'],'combo':raw['combo'],'mid':mid,'ph':ph,'start':start,'area':area,'pos':raw['pos'],'pos_basis':raw.get('pos_basis','')},avg
+SAMPLES=json.load(open(os.path.join(HERE,'samples.json'),encoding='utf-8'))
+TABS=[('e4_all','초4 전 영역'),('e1_plr','초1 파닉스+듣말+읽쓰'),('e6_all_low','초6 전 영역·평균 이하'),('m1_lrg','중1 듣말+읽쓰+문법'),('h1_all','고1 전 영역'),('e3_p','초3 파닉스만'),('e4_pg','초4 파닉스+문법')]
+S=None; AVG=None; pos=None; by=None; areas=None
+def set_sample(key):
+    global S,AVG,pos,by,areas
+    S,AVG=convert(SAMPLES[key],key); v10.S=S; v10.AVG=AVG
+    pos=S['pos']; by=S['start']['by']
+    areas=[(a,NM[a],COL[a],S['area'][a]['score']) for a in 'PLRG' if a in S['area']]
+set_sample('e4_all')
 # ---------- 차트 JS (현행 옵션 복제 + 변경점) ----------
 CHART_JS=r'''
 (function(){
@@ -59,45 +101,68 @@ CHART_JS=r'''
   };
 })();'''
 # ---------- 공통 조각 ----------
-def yes_table(tid):
+def yes_table(tid,cell=None):
+    cell=cell or S["start"].get("cell")
     cells=[('Rookie초1','Rookie','초1','',1),('Rookie초2','Rookie','초2','borderright',0),('RisingStar초3','RisingStar','초3','',1),('RisingStar초4','RisingStar','초4','borderright',0),
            ('AllStar초5','AllStar','초5','',1),('AllStar초6','AllStar','초6','borderright',0),('MVP예비중','MVP','예비중','borderright',0)]+[(f'중고등{i}','중고등',str(i),'',1 if i<9 else 0) for i in range(1,10)]
-    tds=''.join(f'<td data-level="{k}" class="{cls}{" bgred" if lv==S["start"]["cell"] else ""}" data-curri-stg="{stg}" data-curri-level="{lv}">{lv}{"<span></span>" if sp else ""}</td>' for k,stg,lv,cls,sp in cells)
+    tds=''.join(f'<td data-level="{k}" class="{cls}{" bgred" if lv==cell else ""}" data-curri-stg="{stg}" data-curri-level="{lv}">{lv}{"<span></span>" if sp else ""}</td>' for k,stg,lv,cls,sp in cells)
     cols='<col width="*">'+''.join(f'<col width="{w}">' for w in ['5.8%']*6+['6%']+['5.8%']*9)
     return (f'<table data-1-level id="{tid}"><colgroup>{cols}</colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr>'
             f'<tr class="height30">{tds}</tr></table>')
+def ph_table(tid,stage):
+    ph=S['ph']
+    w=f'{round(94/len(ph),1)}%'
+    return (f'<table data-1-level id="{tid}" class="v11ph" style="table-layout:fixed;width:100%"><colgroup><col width="69px">'+''.join(f'<col width="{w}">' for _ in ph)+'</colgroup><tr><th rowspan="2" style="width: unset;">파닉스</th>'+''.join(f'<th>{x}</th>' for x in ph)+'</tr>'
+            '<tr class="height30">'+''.join(f'<td class="{"bgred" if x==stage else ""}">{x}</td>' for x in ph)+'</tr></table>')
+def start_parts(tid):
+    """(배지들 HTML, 큐 텍스트, 표 HTML) — 응시 조합별"""
+    st=S['start']; cue_other='메인 커리큘럼 레벨은 듣기/말하기·읽기/쓰기 응시 시 제공'
+    if st['by'] in ('L','R','G'):
+        return [st['level']], f'{NM[st["by"]]} 기준', yes_table(tid,st['cell'])
+    return ['파닉스 '+st['level']], cue_other, ph_table(tid+'P',st['level'])
+def start_sentence():
+    st=S['start']; b=st['by']
+    if b in ('L','R','G'): return f'<b>{st["level"]}</b> 단계 <b>{NM[b]}</b> 영역 교재부터 학습을 시작하세요.'
+    return f'파닉스 <b>{st["level"]}</b> 단계 교재부터 학습을 시작하세요.'
 def gauge_divs(prefix,h):
     out=''
     for i,(a,n,c,sc) in enumerate(areas,1):
         tag='<b class="v11tag">시작점 기준</b>' if a==by else ''
-        out+=f'<div class="v11g"><div id="{prefix}{i}" style="float:left; width:50%; height:{h}px;"></div>{tag}</div>' if tag else f'<div id="{prefix}{i}" style="float:left; width:50%; height:{h}px;"></div>'
-    return out
+        out+=f'<div class="v11g"><div id="{prefix}{i}" style="width:100%; height:{h}px;"></div>{tag}</div>'
+    return f'<div class="v11gs n{len(areas)}">{out}</div>'
 def chart_init(prefix,bell_id):
     calls=''.join(f"v11Gauge('{prefix}{i}','{n}',{sc:g},'{c}');" for i,(a,n,c,sc) in enumerate(areas,1))
     return f'<script>{CHART_JS}</script><script>{calls}v11Bell("{bell_id}",{pos});</script>'
 def summary():
     gr=S['gr']
-    return (f'{gr} 응시자 중 <b>{ptxt(pos)}</b>로, <b>{band(pos)} 구간</b>이에요. <b>{S["start"]["level"]}</b> 단계 <b>{NM[by]}</b> 영역 교재부터 학습을 시작하세요.')
+    return (f'{gr} 응시자 중 <b>{ptxt(pos)}</b>로, <b>{band(pos)} 구간</b>이에요. '+start_sentence())
 def header():
     return (f'<div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div>'
             f'<div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">{S["date"]}</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div>'
             f'<dl><dd><span>이름</span><span id="reportName">{S["name"]}</span></dd><dd><span>학년</span><span id="reportYear">{S["grade"]}</span></dd></dl></div></div></div>')
 # ---------- 1p (현행 마크업) ----------
 def page1():
+    badges,cue,tbl=start_parts('tblBEFLLevelTOBE')
+    gbox=260; bell_h=260
     return ('<div class="rep"><div class="content"><div class="slide_pa">'
-            '<div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> '
-            f'<span class="level visib" id="spnLevel" style="width: unset; visibility: visible;">{S["start"]["level"]}</span><span class="v11cue">{NM[by]} 기준</span></dt>'
-            f'<dd><div class="tableLayout_wrap">{yes_table("tblBEFLLevelTOBE")}</div></dd></dl></div></div>'
+            '<div class="asidetop_wrap'+(' v11dual' if 'by2' in S['start'] else '')+'" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> '
+            +''.join(f'<span class="level visib" style="width: unset; visibility: visible;">{b}</span>' for b in badges)+f'<span class="v11cue">{cue}</span></dt>'
+            f'<dd><div class="tableLayout_wrap">{tbl}</div></dd></dl></div></div>'
             '<div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd>'
-            f'<div style="width:300px; height:260px;">{gauge_divs("divChartScore",130)}</div></dd></dl></div>'
+            f'<div style="width:300px; height:{gbox}px;">{gauge_divs("divChartScore",130)}</div></dd></dl></div>'
             '<div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd>'
-            '<div class="graph_wrap"><div id="divPositionArea" style="width:100%;height:260px;"></div></div>'
+            f'<div class="graph_wrap" style="height:{bell_h+20}px"><div id="divPositionArea" style="width:100%;height:{bell_h}px;"></div></div>'
             f'<div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span>{summary()}</div></dd></dl></div></div>'
             '</div></div></div>'+chart_init('divChartScore','divPositionArea'))
 # ---------- 인쇄용 (현행 인쇄 마크업 + 하단 v10) ----------
 def cards_print():
     out=''
     for a in 'PLRG':
+        if a not in S['area']:
+            if a=='R' and 'L' not in S['area']: continue   # 듣말·읽쓰 둘 다 없으면 빈칸 하나(2칸 폭)
+            span=2 if (a=='L' and 'R' not in S['area']) else 1
+            out+=f'<div class="cd blankcol" style="grid-column:span {span}"><div class="blank"><img src="{HOST}/images/icon/blank_icon.png"><div>해당 영역에 응시하지 않았습니다.</div></div></div>'
+            continue
         x=S['area'][a]; n=7 if a=='P' else 16; name=x['stage'] if a=='P' else x['level']
         fill=x['cellpos']/n*100; av=AVG[a]['cellpos']/n*100
         tg='<b class="tg">시작점 기준</b>' if a==by else ''
@@ -106,7 +171,8 @@ def cards_print():
               f'<div class="rw"><span>정답률</span><b>{x["score"]:g}%</b><small>{x["k"]} / {x["n"]}문항</small></div></div>')
     return out
 def page_print():
-    boxes=''.join(f'<div class="info_area {cls}"><div>{BOX[k][0]}</div><div>{BOX[k][1]}</div></div>' for k,cls in (('P','orange'),('LR','green'),('G','purple')))
+    def has(k): return any(a in S['area'] for a in {'P':'P','LR':'LR','G':'G'}[k])
+    boxes=''.join((f'<div class="info_area {cls}"><div>{BOX[k][0]}</div><div>{BOX[k][1]}</div></div>' if has(k) else f'<div class="info_area {cls} empty"></div>') for k,cls in (('P','orange'),('LR','green'),('G','purple')))
     return (f'<div class="wrap printerv3" id="printTest" style="overflow-x : hidden;"><div class="y_printer_area" style="display:none"></div>'
             f'<header><section class="header_1"><img src="{HOST}/images/icon/printer_logo_1.png" class="logo"><div class="title">윤선생 진단평가 리포트</div><div class="day" id="reportDate">{S["date"]}</div></section>'
             f'<section class="header_2"><dl class="center"><dt>센터</dt><dd id="headerBm">배플리</dd></dl><dl class="name"><dt>이름</dt><dd id="reportName">{S["name"]}</dd></dl><dl class="class"><dt>학년</dt><dd id="reportYear">{S["grade"]}</dd></dl></section></header>'
@@ -137,19 +203,29 @@ def doc(title,body,extra_css='',cur=''):
     return (f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=1024"><title>{title}</title>{css_links()}{hc_scripts()}<style>{V11CSS}{extra_css}</style></head><body>{nav(cur)}{body}</body></html>')
 if __name__=='__main__':
     v10css=open(os.path.join(HERE,'v10.css'),encoding='utf-8').read()
-    p1=f'<section class="mk_page">{header()}{page1()}<div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section>'
-    p2=f'<section class="mk_page">{v10.header(S["name"],S["grade"],S["date"])}{page2()}<div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section>'
+    dots1='<div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div>'; dots2='<div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div>'
+    pages={}
+    for key,label in TABS:
+        set_sample(key)
+        p1=f'<section class="mk_page">{header()}{page1()}{dots1}</section>'.replace('divChartScore',f'c{key}_s').replace('divPositionArea',f'c{key}_pos').replace('id="tblBEFLLevelTOBE','id="t'+key)
+        p2=f'<section class="mk_page">{v10.header(S["name"],S["grade"],S["date"])}{page2()}{dots2}</section>'
+        pages[key]=(label,p1,p2)
+    set_sample(os.environ.get('PRINT_KEY','e4_all'))   # 인쇄용은 초4 전 영역 1종 (검증용으로 PRINT_KEY 지정 가능)
     pr=f'<section class="mk_print">{page_print()}</section>'
+    label,p1,p2=pages['e4_all']
     open(os.path.join(OUT,'1p.html'),'w',encoding='utf-8').write(doc('진단평가 리포트 v11 — 1p',p1,cur='1p.html'))
     open(os.path.join(OUT,'2p.html'),'w',encoding='utf-8').write(doc('진단평가 리포트 v11 — 2p',p2,v10css,cur='2p.html'))
     open(os.path.join(OUT,'print.html'),'w',encoding='utf-8').write(doc('진단평가 리포트 v11 — 인쇄용',pr,cur='print.html'))
-    # 탭 통합 (차트 id 충돌 방지: 인쇄용 id에 접미사)
-    pr2=pr.replace('divChartScore','pChartScore').replace('divPositionArea','pPositionArea').replace('id="spnLevel"','id="pSpnLevel"').replace('id="tblBEFLLevelTOBE"','id="pTbl"').replace('id="positionText"','id="pPositionText"')
-    tabs=[('p1','1페이지',p1),('p2','2페이지',p2),('pr','인쇄용 (A4)',pr2)]
-    bar=('<nav class="mk_bar"><strong>진단평가 리포트 · v11</strong>'+''.join(f'<a href="#" data-t="{k}" class="{"on" if i==0 else ""}">{t}</a>' for i,(k,t,_) in enumerate(tabs))+
-         '<span class="hint">초4 전 영역 · 2025.08.27 응시 · 점수·수준·위치 실제값 · 처방 문구는 현행 샘플(자리표시)</span></nav>')
-    secs=''.join(f'<div class="tabpane" id="{k}" style="{"" if i==0 else "display:none"}">{b}</div>' for i,(k,t,b) in enumerate(tabs))
-    js=("<script>document.querySelectorAll('.mk_bar a[data-t]').forEach(function(a){a.onclick=function(e){e.preventDefault();document.querySelectorAll('.mk_bar a[data-t]').forEach(function(x){x.classList.remove('on')});a.classList.add('on');"
-        "document.querySelectorAll('.tabpane').forEach(function(s){s.style.display=s.id===a.dataset.t?'':'none'});window.dispatchEvent(new Event('resize'));};});</script>")
+    # 탭 통합: 샘플(영역 조합) × 페이지(1p/2p) + 인쇄용(초4 1종)
+    sbtns=''.join(f'<a href="#" data-s="{k}" class="{"on" if i==0 else ""}">{l}</a>' for i,(k,l) in enumerate(TABS))
+    bar=('<nav class="mk_bar"><strong>진단평가 리포트 · v11</strong><span class="grp">응시 조합</span>'+sbtns+'<span class="hint">점수·수준·위치 실제 응시 기록 · 처방 문구는 현행 샘플(자리표시)</span></nav>'
+         '<nav class="mk_bar mk_bar2"><span class="grp">페이지</span><a href="#" data-t="p1" class="on">1페이지</a><a href="#" data-t="p2">2페이지</a><a href="#" data-t="pr">인쇄용 (A4 · 초4 전 영역)</a></nav>')
+    secs=''.join(f'<div class="spane" data-s="{k}" style="{"" if i==0 else "display:none"}"><div class="tabpane" data-t="p1">{p1}</div><div class="tabpane" data-t="p2" style="display:none">{p2}</div></div>' for i,(k,(l,p1,p2)) in enumerate(pages.items()))
+    secs+=f'<div class="tabpane" id="prpane" data-t="pr" style="display:none">{pr}</div>'
+    js=("<script>var curS='e4_all',curT='p1';function show(){document.querySelectorAll('.spane').forEach(function(s){s.style.display=(s.dataset.s===curS&&curT!=='pr')?'':'none';});"
+        "document.querySelectorAll('.spane .tabpane').forEach(function(t){t.style.display=t.dataset.t===curT?'':'none';});document.getElementById('prpane').style.display=curT==='pr'?'':'none';"
+        "document.querySelectorAll('.mk_bar a[data-s]').forEach(function(a){a.classList.toggle('on',a.dataset.s===curS)});document.querySelectorAll('.mk_bar a[data-t]').forEach(function(a){a.classList.toggle('on',a.dataset.t===curT)});window.dispatchEvent(new Event('resize'));}"
+        "document.querySelectorAll('.mk_bar a[data-s]').forEach(function(a){a.onclick=function(e){e.preventDefault();curS=a.dataset.s;if(curT==='pr')curT='p1';show();}});"
+        "document.querySelectorAll('.mk_bar a[data-t]').forEach(function(a){a.onclick=function(e){e.preventDefault();curT=a.dataset.t;show();}});</script>")
     idx=(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=1024"><title>진단평가 리포트 v11</title>{css_links()}{hc_scripts()}<style>{V11CSS}{v10css}</style></head><body>{bar}{secs}{js}</body></html>')
-    open(os.path.join(OUT,'index.html'),'w',encoding='utf-8').write(idx); print('v11 ok')
+    open(os.path.join(OUT,'index.html'),'w',encoding='utf-8').write(idx); print('v11 ok', len(pages))
