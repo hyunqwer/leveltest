@@ -1,0 +1,68 @@
+/* ===== v12: 현행 레이아웃 유지, 변경 요소만 추가 ===== */
+body{background:#fff;}
+.mk_bar{position:sticky;top:0;z-index:100;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 14px;background:#f7f7f7;border-bottom:1px solid #ccc;font-size:12px;}
+.mk_bar strong{margin-right:6px;font-size:13px;}
+.mk_bar a{padding:4px 9px;border:1px solid #ccc;border-radius:5px;background:#fff;color:#333;text-decoration:none;cursor:pointer;}
+.mk_bar a.on{border-color:#e64545;color:#e64545;font-weight:700;}
+.mk_bar .hint{margin-left:auto;color:#888;font-size:11px;}
+.mk_page{position:relative;margin:0 0 40px;}
+.mk_page .rep{width:1024px;margin:0 auto;}
+.mk_page .rep > .content{height:600px;overflow:hidden;}
+.mk_dots{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:0;}
+.mk_dots i{display:inline-block;width:10px;height:10px;margin:0 3px;border-radius:50%;background:#ccc;}
+.mk_dots i.on{background:#e64545;}
+#header .reportInfo_wrap > dl dd{display:inline-block;width:260px;height:36px;border:1px solid #fff;margin:0 8px;font-size:14px;border-radius:5px;}
+@media print{.mk_bar{display:none}}
+/* ① 시작점 큐 (화면: 배지 옆 회색 작은 글씨) */
+.rep .level_section dt .v12cue{margin-left:10px;font-size:12px;color:#888;font-weight:400;vertical-align:middle;}
+/* ② 시작점 기준 태그 (원그래프 위) — 차트 div 크기는 그대로, 래퍼만 추가 */
+.v12gs{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;height:100%;}
+.v12g{position:relative;width:50%;flex:0 0 50%;}
+.v12gs.n4 .v12g:nth-child(-n+2),.v12gs.n3 .v12g:nth-child(-n+2){margin-bottom:8px;}
+.printerv3 .v12gs.n4 .v12g:nth-child(-n+2),.printerv3 .v12gs.n3 .v12g:nth-child(-n+2){margin-bottom:7px;}
+/* ③ 총평 두 줄 허용 */
+.rep .arert_wrap b{color:#e64545;font-weight:700;}
+/* ===== 인쇄용 ===== */
+.mk_print{background:#eee;padding:16px 0;}
+.mk_print > .wrap{width:860px;margin:0 auto;background:#fff;}
+@media print{.mk_print{background:#fff;padding:0}.mk_print > .wrap{margin:0}}
+.printerv3 .sec_1 .level .v12cue{display:block;font-size:11px;color:#888;font-weight:400;line-height:14px;margin-top:-18px;}
+.printerv3 .arert_wrap b{color:#e64545;}
+.printerv3 .v12g{width:50%;}
+/* 인쇄 하단: v10 구성 (카드 4장 1:2:1 열폭 → 4열 균등, 박스는 1:2:1) */
+.printerv3 .v12sec3 .contitle .lg{margin-left:14px;font-size:11px;color:#777;font-weight:400;}
+.printerv3 .v12sec3 .contitle .lg i{display:inline-block;vertical-align:middle;margin:0 3px 0 8px;}
+.printerv3 .v12sec3 .contitle .lg i.me{width:20px;height:8px;border-radius:0 4px 4px 0;background:linear-gradient(to right,#ef7c00 0 25%,#0a953d 25% 50%,#0078bf 50% 75%,#7b5aa3 75%);}
+.printerv3 .v12sec3 .contitle .lg i.av{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:8px solid #555;}
+.printerv3 .v12sec3{padding:15px !important;}
+.printerv3 .v12sec3 .cds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.printerv3 .v12sec3 .cd{display:flex;flex-direction:column;min-height:182px;padding:16px 12px 12px;border:1px solid #e0e0e0;border-top:3px solid var(--c);border-radius:4px;background:#fff;}
+.printerv3 .v12sec3 .cd .hd2{display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--c);height:16px;}
+.printerv3 .v12sec3 .cd .tg{display:inline-block;margin-left:5px;padding:0 4px;height:14px;line-height:11px;border-radius:3px;font-size:8px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545;}
+.printerv3 .v12sec3 .cd .lv{margin-top:9px;font-size:17px;font-weight:800;color:#333;letter-spacing:-.3px;white-space:nowrap;}
+.printerv3 .v12sec3 .cd .mb{position:relative;height:11px;margin:auto 0;border-radius:0 5px 5px 0;background:#f1f1f1;}
+.printerv3 .v12sec3 .cd .mb .fill{position:absolute;left:0;top:0;height:100%;border-radius:0 5px 5px 0;background:var(--c);opacity:.9;}
+.printerv3 .v12sec3 .cd .mb .av{position:absolute;top:-4px;width:0;height:0;margin-left:-4px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:8px solid #555;}
+.printerv3 .v12sec3 .cd .rw{display:flex;align-items:baseline;gap:4px;margin-top:0;padding-top:12px;padding-bottom:2px;border-top:1px dashed #e6e6e6;font-size:10px;color:#888;white-space:nowrap;}
+.printerv3 .v12sec3 .cd .rw span{flex:none;min-width:26px;margin-right:2px}.printerv3 .v12sec3 .cd .rw b{font-size:16px;font-weight:800;color:#333}.printerv3 .v12sec3 .cd .rw small{font-size:9.5px;color:#999}
+.printerv3 .v12sec3 .boxes{display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;margin-top:32px;}
+.printerv3 .v12sec3 .info_area{float:none;width:auto;margin:0;height:auto;min-height:0;padding:15px 15px 36px;line-height:20px;font-size:0.85rem;font-weight:300;color:#221815;}
+.printerv3 .v12sec3 .info_area > div:first-child{font-weight:700;margin-bottom:10px;}
+/* 인쇄 YES4.0 표: 칸 줄바꿈 방지 (현행 인쇄본과 동일하게 한 줄) */
+.printerv3 .sec_1 .tableLayout_wrap table td{white-space:nowrap;padding:6px 2px;}
+.printerv3 .sec_1 .tableLayout_wrap table th{padding:6px 2px;}
+/* 영역 조합별 */
+.mk_bar .grp{font-size:11px;color:#999;margin-right:2px;}
+.mk_bar2{top:37px;background:#fff;}
+.rep .level_section dt span.level+span.level{margin-left:8px;}
+.rep .v12dual .tableLayout_wrap table+table{margin-top:6px;}
+.rep .v12dual .tableLayout_wrap table th{height:22px;line-height:22px;font-size:12px;}
+.rep .v12dual .tableLayout_wrap table tr.height30{height:26px;}
+.rep .v12dual .tableLayout_wrap table td{line-height:24px;padding:0;font-size:12px;}
+.rep .v12ph th,.rep .v12ph td{text-align:center;white-space:nowrap;overflow:hidden;}
+/* 인쇄: 미응시 열 빈칸(현행 .blank 패턴) + 빈 처방 박스 */
+.printerv3 .v12sec3 .cd.blankcol{position:relative;border:0;background:none;padding:0;}
+.printerv3 .v12sec3 .cd.blankcol .blank{position:static;height:100%;min-height:182px;width:100%;background:url('https://leveltest.yoons.com/images/icon/blank_pattern.png');text-align:center;font-weight:700;font-size:0.7rem;padding-top:70px;}
+.printerv3 .v12sec3 .cd.blankcol .blank > div{margin-top:5px;}
+.printerv3 .v12sec3 .info_area.empty{min-height:120px;}
+/* 시작점 기준 태그: 원의 1~2시 방향 바깥 가장자리에 살짝 걸침 (가이드선 없음) */

@@ -1,0 +1,540 @@
+<!doctype html><html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=1024"><title>진단평가 리포트 v12</title><link rel="stylesheet" href="https://leveltest.yoons.com/css/common.css?v=1.0"><link rel="stylesheet" href="https://leveltest.yoons.com/css/w_reset.css?v=1.0"><link rel="stylesheet" href="https://leveltest.yoons.com/css/w_base.css?v=1.27"><link rel="stylesheet" href="https://leveltest.yoons.com/css/w_media.css?v=1.2"><script src="https://leveltest.yoons.com/Highcharts-6.0.3/highcharts.js"></script><script src="https://leveltest.yoons.com/Highcharts-6.0.3/highcharts-more.js"></script><script src="https://leveltest.yoons.com/Highcharts-6.0.3/modules/solid-gauge.js"></script><style>/* ===== v12: 현행 레이아웃 유지, 변경 요소만 추가 ===== */
+body{background:#fff;}
+.mk_bar{position:sticky;top:0;z-index:100;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 14px;background:#f7f7f7;border-bottom:1px solid #ccc;font-size:12px;}
+.mk_bar strong{margin-right:6px;font-size:13px;}
+.mk_bar a{padding:4px 9px;border:1px solid #ccc;border-radius:5px;background:#fff;color:#333;text-decoration:none;cursor:pointer;}
+.mk_bar a.on{border-color:#e64545;color:#e64545;font-weight:700;}
+.mk_bar .hint{margin-left:auto;color:#888;font-size:11px;}
+.mk_page{position:relative;margin:0 0 40px;}
+.mk_page .rep{width:1024px;margin:0 auto;}
+.mk_page .rep > .content{height:600px;overflow:hidden;}
+.mk_dots{position:absolute;left:0;right:0;bottom:4px;text-align:center;font-size:0;}
+.mk_dots i{display:inline-block;width:10px;height:10px;margin:0 3px;border-radius:50%;background:#ccc;}
+.mk_dots i.on{background:#e64545;}
+#header .reportInfo_wrap > dl dd{display:inline-block;width:260px;height:36px;border:1px solid #fff;margin:0 8px;font-size:14px;border-radius:5px;}
+@media print{.mk_bar{display:none}}
+/* ① 시작점 큐 (화면: 배지 옆 회색 작은 글씨) */
+.rep .level_section dt .v12cue{margin-left:10px;font-size:12px;color:#888;font-weight:400;vertical-align:middle;}
+/* ② 시작점 기준 태그 (원그래프 위) — 차트 div 크기는 그대로, 래퍼만 추가 */
+.v12gs{display:flex;flex-wrap:wrap;justify-content:center;align-content:center;height:100%;}
+.v12g{position:relative;width:50%;flex:0 0 50%;}
+.v12gs.n4 .v12g:nth-child(-n+2),.v12gs.n3 .v12g:nth-child(-n+2){margin-bottom:8px;}
+.printerv3 .v12gs.n4 .v12g:nth-child(-n+2),.printerv3 .v12gs.n3 .v12g:nth-child(-n+2){margin-bottom:7px;}
+/* ③ 총평 두 줄 허용 */
+.rep .arert_wrap b{color:#e64545;font-weight:700;}
+/* ===== 인쇄용 ===== */
+.mk_print{background:#eee;padding:16px 0;}
+.mk_print > .wrap{width:860px;margin:0 auto;background:#fff;}
+@media print{.mk_print{background:#fff;padding:0}.mk_print > .wrap{margin:0}}
+.printerv3 .sec_1 .level .v12cue{display:block;font-size:11px;color:#888;font-weight:400;line-height:14px;margin-top:-18px;}
+.printerv3 .arert_wrap b{color:#e64545;}
+.printerv3 .v12g{width:50%;}
+/* 인쇄 하단: v10 구성 (카드 4장 1:2:1 열폭 → 4열 균등, 박스는 1:2:1) */
+.printerv3 .v12sec3 .contitle .lg{margin-left:14px;font-size:11px;color:#777;font-weight:400;}
+.printerv3 .v12sec3 .contitle .lg i{display:inline-block;vertical-align:middle;margin:0 3px 0 8px;}
+.printerv3 .v12sec3 .contitle .lg i.me{width:20px;height:8px;border-radius:0 4px 4px 0;background:linear-gradient(to right,#ef7c00 0 25%,#0a953d 25% 50%,#0078bf 50% 75%,#7b5aa3 75%);}
+.printerv3 .v12sec3 .contitle .lg i.av{width:0;height:0;border-left:4px solid transparent;border-right:4px solid transparent;border-top:8px solid #555;}
+.printerv3 .v12sec3{padding:15px !important;}
+.printerv3 .v12sec3 .cds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}
+.printerv3 .v12sec3 .cd{display:flex;flex-direction:column;min-height:182px;padding:16px 12px 12px;border:1px solid #e0e0e0;border-top:3px solid var(--c);border-radius:4px;background:#fff;}
+.printerv3 .v12sec3 .cd .hd2{display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--c);height:16px;}
+.printerv3 .v12sec3 .cd .tg{display:inline-block;margin-left:5px;padding:0 4px;height:14px;line-height:11px;border-radius:3px;font-size:8px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545;}
+.printerv3 .v12sec3 .cd .lv{margin-top:9px;font-size:17px;font-weight:800;color:#333;letter-spacing:-.3px;white-space:nowrap;}
+.printerv3 .v12sec3 .cd .mb{position:relative;height:11px;margin:auto 0;border-radius:0 5px 5px 0;background:#f1f1f1;}
+.printerv3 .v12sec3 .cd .mb .fill{position:absolute;left:0;top:0;height:100%;border-radius:0 5px 5px 0;background:var(--c);opacity:.9;}
+.printerv3 .v12sec3 .cd .mb .av{position:absolute;top:-4px;width:0;height:0;margin-left:-4px;border-left:4px solid transparent;border-right:4px solid transparent;border-top:8px solid #555;}
+.printerv3 .v12sec3 .cd .rw{display:flex;align-items:baseline;gap:4px;margin-top:0;padding-top:12px;padding-bottom:2px;border-top:1px dashed #e6e6e6;font-size:10px;color:#888;white-space:nowrap;}
+.printerv3 .v12sec3 .cd .rw span{flex:none;min-width:26px;margin-right:2px}.printerv3 .v12sec3 .cd .rw b{font-size:16px;font-weight:800;color:#333}.printerv3 .v12sec3 .cd .rw small{font-size:9.5px;color:#999}
+.printerv3 .v12sec3 .boxes{display:grid;grid-template-columns:1fr 2fr 1fr;gap:8px;margin-top:32px;}
+.printerv3 .v12sec3 .info_area{float:none;width:auto;margin:0;height:auto;min-height:0;padding:15px 15px 36px;line-height:20px;font-size:0.85rem;font-weight:300;color:#221815;}
+.printerv3 .v12sec3 .info_area > div:first-child{font-weight:700;margin-bottom:10px;}
+/* 인쇄 YES4.0 표: 칸 줄바꿈 방지 (현행 인쇄본과 동일하게 한 줄) */
+.printerv3 .sec_1 .tableLayout_wrap table td{white-space:nowrap;padding:6px 2px;}
+.printerv3 .sec_1 .tableLayout_wrap table th{padding:6px 2px;}
+/* 영역 조합별 */
+.mk_bar .grp{font-size:11px;color:#999;margin-right:2px;}
+.mk_bar2{top:37px;background:#fff;}
+.rep .level_section dt span.level+span.level{margin-left:8px;}
+.rep .v12dual .tableLayout_wrap table+table{margin-top:6px;}
+.rep .v12dual .tableLayout_wrap table th{height:22px;line-height:22px;font-size:12px;}
+.rep .v12dual .tableLayout_wrap table tr.height30{height:26px;}
+.rep .v12dual .tableLayout_wrap table td{line-height:24px;padding:0;font-size:12px;}
+.rep .v12ph th,.rep .v12ph td{text-align:center;white-space:nowrap;overflow:hidden;}
+/* 인쇄: 미응시 열 빈칸(현행 .blank 패턴) + 빈 처방 박스 */
+.printerv3 .v12sec3 .cd.blankcol{position:relative;border:0;background:none;padding:0;}
+.printerv3 .v12sec3 .cd.blankcol .blank{position:static;height:100%;min-height:182px;width:100%;background:url('https://leveltest.yoons.com/images/icon/blank_pattern.png');text-align:center;font-weight:700;font-size:0.7rem;padding-top:70px;}
+.printerv3 .v12sec3 .cd.blankcol .blank > div{margin-top:5px;}
+.printerv3 .v12sec3 .info_area.empty{min-height:120px;}
+/* 시작점 기준 태그: 원의 1~2시 방향 바깥 가장자리에 살짝 걸침 (가이드선 없음) */
+/* ===== v9: 기존 서비스 CSS 뒤에 추가, .rpt_v10 범위 한정 ===== */
+body{background:#fff;}
+.mk_bar{position:sticky;top:0;z-index:100;display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 14px;background:#f7f7f7;border-bottom:1px solid #ccc;font-size:12px;}
+.mk_bar strong{margin-right:6px;font-size:13px;}
+.mk_bar a{padding:4px 9px;border:1px solid #ccc;border-radius:5px;background:#fff;color:#333;text-decoration:none;cursor:pointer;}
+.mk_bar a:hover{border-color:#e64545;color:#e64545;font-weight:700;}
+.mk_bar .hint{margin-left:auto;color:#888;font-size:11px;}
+.mk_page{position:relative;margin:0 0 40px;}
+.mk_page .rep{width:1024px;margin:0 auto;}
+.mk_page .rep > .content{height:600px;overflow:hidden;}
+.mk_dots{position:absolute;left:0;right:0;bottom:24px;text-align:center;font-size:0;}
+.mk_dots i{display:inline-block;width:10px;height:10px;margin:0 3px;border-radius:50%;background:#ccc;}
+.mk_dots i.on{background:#e64545;}
+#header .reportInfo_wrap > dl dd{display:inline-block;width:260px;height:36px;border:1px solid #fff;margin:0 8px;font-size:14px;border-radius:5px;}
+@media print{.mk_bar{display:none}.mk_page{break-after:page;margin:0;zoom:.9}.mk_page:last-child{break-after:auto}@page{size:A4 landscape;margin:8mm}}
+@media screen and (max-width:1050px){.mk_page{overflow-x:auto;}}
+.rpt_v10 table{border-collapse:collapse;border-spacing:0;}
+.rpt_v10 dl dt{display:flex;align-items:center;height:32px;margin:0;}
+.rpt_v10 .arert_wrap b{color:#e64545;font-weight:700;}
+
+/* 1p-1 시작점 */
+.rpt_v10 .sec3{margin-top:0;margin-bottom:30px;}
+.rpt_v10 .sec3 dl dt{height:34px;}
+.rep.rpt_v10 > .content .sec3 dt span.level{display:inline-block;height:28px;line-height:26px;border-radius:100px;border:2px solid #e64545;color:#e64545;font-weight:700;font-size:14px;margin-left:12px;padding:0 14px;vertical-align:middle;}
+.rpt_v10 .sec3 dt .cue{margin-left:10px;font-size:12px;color:#888;}
+.rpt_v10 .sec3 .tableLayout_wrap{padding-top:6px;}
+.rep.rpt_v10 > .content .sec3 .level_section dd th{font-size:12px;height:26px;}
+.rep.rpt_v10 > .content .sec3 .level_section dd tr.height30{height:32px;}
+.rep.rpt_v10 > .content .sec3 .level_section dd td{font-size:13px;line-height:28px;padding:1px 0;}
+.rep.rpt_v10 > .content .sec3 .level_section dd td.bgred{background-color:#e64545;color:#fff;font-weight:700;}
+.rep.rpt_v10 > .content .sec3 .level_section dd td.borderright{border-right:1px solid #ccc;}
+
+/* 1p-2 하단 2단 */
+.rpt_v10 .two{display:flex;gap:30px;align-items:stretch;}
+.rpt_v10 .colL{flex:0 0 340px;display:flex;flex-direction:column;}
+.rpt_v10 .colL dl{flex:1;display:flex;flex-direction:column;}
+.rpt_v10 .colL dd{flex:1;display:flex;flex-direction:column;justify-content:center;}
+.rpt_v10 .colR{flex:1;min-width:0;display:flex;flex-direction:column;}
+.rpt_v10 .colR dl{flex:1;display:flex;flex-direction:column;}
+.rpt_v10 .colR dd{flex:1;display:flex;flex-direction:column;justify-content:flex-start;}
+/* 원그래프 */
+.rpt_v10 .dns{display:grid;grid-template-columns:1fr 1fr;gap:8px 0;margin-top:6px;}
+.rpt_v10 .dn{position:relative;display:flex;flex-direction:column;align-items:center;padding:22px 0 2px;}
+.rpt_v10 .dn .tags{position:absolute;left:50%;top:11px;transform:translateX(-50%);z-index:2;white-space:nowrap;}
+.rpt_v10 .dn .tg{display:inline-block;padding:0 6px;height:17px;line-height:14px;border-radius:3px;font-size:9.5px;font-weight:700;white-space:nowrap;}
+.rpt_v10 .dn .tg.st{background:#fff;color:#e64545;border:1.5px solid #e64545;}
+.rpt_v10 .dn .ring{position:relative;width:118px;height:118px;}
+.rpt_v10 .dn .ring svg{display:block;width:118px;height:118px;}
+.rpt_v10 .dn .ctr{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1.15;}
+.rpt_v10 .dn .ctr .nm{font-size:12.5px;color:#555;}
+.rpt_v10 .dn .ctr strong{font-size:21px;font-weight:800;color:#333;letter-spacing:-.5px;}
+/* 벨커브 */
+.rpt_v10 .bell{display:block;margin-top:6px;width:100%;height:auto;}
+.rpt_v10 .colR .arert_wrap{margin-top:auto;margin-bottom:10px;line-height:21px;padding:7px 14px 7px 42px;min-height:0;font-size:13px;width:100%;float:none;}
+
+/* 2p */
+.rpt_v10.p2wrap .slide_pa{padding-top:6px;}
+.rpt_v10 .pcols{display:flex;gap:18px;align-items:stretch;}
+.rpt_v10 .pcol{flex:1;min-width:0;display:flex;flex-direction:column;}
+.rpt_v10 .pcol.c-lr{flex:1.1;}
+.rpt_v10 .ptitle{position:relative;padding-left:10px;font-size:12px;font-weight:800;color:#333;line-height:30px;margin-bottom:4px;}
+.rpt_v10 .ptitle::before{content:'';position:absolute;left:0;top:9px;width:3px;height:13px;background:#333;}
+.rpt_v10 .lad{position:relative;margin-top:8px;padding-bottom:22px;}
+.rpt_v10 .lad .lhd{display:flex;align-items:center;gap:8px;height:24px;font-size:12px;}
+.rpt_v10 .lad .lhd .nm{font-weight:700;color:var(--c);}
+.rpt_v10 .lad .lhd .lv{margin-left:auto;font-weight:700;color:#333;font-size:12.5px;}
+.rpt_v10 .lad .tg{padding:0 6px;height:17px;line-height:15px;border-radius:3px;font-size:9.5px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545;}
+.rpt_v10 .lad .axis{display:grid;font-size:8.5px;color:#aaa;line-height:1;margin:2px 0 3px;letter-spacing:-.3px;}
+.rpt_v10 .lad .axis.n16{grid-template-columns:repeat(16,1fr);} .rpt_v10 .lad .axis.n7{grid-template-columns:repeat(7,1fr);}
+.rpt_v10 .lad .axis i{text-align:center;font-style:normal;white-space:nowrap;}
+.rpt_v10 .lad .track{position:relative;height:16px;border-radius:0 8px 8px 0;background:#f1f1f1;}
+.rpt_v10 .lad .track.n16{background-image:repeating-linear-gradient(to right,transparent 0 calc(100%/16 - 1px),#fff calc(100%/16 - 1px) calc(100%/16));}
+.rpt_v10 .lad .track.n7{background-image:repeating-linear-gradient(to right,transparent 0 calc(100%/7 - 1px),#fff calc(100%/7 - 1px) calc(100%/7));}
+.rpt_v10 .lad .track .fill{position:absolute;left:0;top:0;height:100%;border-radius:0 8px 8px 0;background:var(--c);opacity:.9;}
+.rpt_v10 .lad .track .avg{position:absolute;top:-3px;width:2px;height:22px;margin-left:-1px;background:#555;}
+.rpt_v10 .lad .avgl{position:absolute;bottom:2px;transform:translateX(-50%);font-size:10px;color:#666;white-space:nowrap;}
+.rpt_v10 .lad .avgl em{font-style:normal;font-size:8px;margin-right:3px;color:#555;}
+.rpt_v10 .stats{margin-top:4px;border-top:1px solid #e6e6e6;}
+.rpt_v10 .stat{display:flex;align-items:center;gap:4px;padding:5px 0;border-bottom:1px solid #eee;}
+.rpt_v10 .stat .k{flex:0 0 66px;color:var(--c);font-weight:700;font-size:12px;}
+.rpt_v10 .stat .c{flex:1;display:flex;align-items:baseline;gap:5px;white-space:nowrap;}
+.rpt_v10 .stat .c small{font-size:10.5px;color:#999;}
+.rpt_v10 .stat .c b{color:#333;font-weight:800;font-size:14px;} .rpt_v10 .stat .c b.pos{color:#e64545;}
+.rpt_v10 .stat .c em{font-style:normal;font-size:10.5px;color:#888;}
+.rpt_v10 .p2cap{margin-top:12px;font-size:10.5px;color:#aaa;text-align:center;}
+.rpt_v10 .p2cap .legend i{display:inline-block;width:14px;height:7px;vertical-align:middle;margin:0 3px 0 6px;border-radius:2px;background:#0078bf;}
+.rpt_v10 .p2cap .legend i.av{width:2px;height:12px;background:#555;border-radius:0;}
+.rpt_v10 .pbox{margin-top:auto;padding:14px 16px;border:1.5px solid var(--bc);border-radius:6px;background:var(--bg);font-size:12.5px;line-height:1.65;color:#444;min-height:120px;}
+.rpt_v10 .pbox b{display:block;margin-bottom:6px;font-size:13px;color:var(--bc);}
+.rpt_v10 .c-p{--bc:#ef7c00;--bg:#fff7ee;} .rpt_v10 .c-lr{--bc:#2e9e5b;--bg:#eef9f1;} .rpt_v10 .c-g{--bc:#7b5aa3;--bg:#f3eef9;}
+.rpt_v10 .pcol.c-lr .lad+.lad{margin-top:4px;}
+
+/* ===== 2p 3안 공통 ===== */
+.rpt_v10 .p2 dl dt{height:34px;}
+.rpt_v10 .p2 dt .lg{margin-left:auto;font-size:11px;color:#777;}
+.rpt_v10 .p2 dt .lg i{display:inline-block;vertical-align:middle;margin:0 4px 0 10px;}
+.rpt_v10 .p2 dt .lg i.me{width:22px;height:9px;border-radius:0 5px 5px 0;background:linear-gradient(to right,#ef7c00 0 25%,#0a953d 25% 50%,#0078bf 50% 75%,#7b5aa3 75%);}
+.rpt_v10 .p2 dt .lg i.av{width:0;height:0;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid #555;}
+.rpt_v10 .p2 dt .cue{margin-left:auto;font-size:11px;color:#888;}
+.rpt_v10 .pboxes{display:flex;gap:16px;margin-top:16px;align-items:stretch;}
+.rpt_v10 .pboxes .pbox{flex:1;min-height:0;margin-top:0;padding:12px 16px;}
+.rpt_v10 .pboxes .pbox.c-lr{flex:1.25;}
+.rpt_v10 .pboxes .pbox p{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.rpt_v10 .p2 .tg{display:inline-block;margin-left:6px;padding:0 6px;height:17px;line-height:14px;border-radius:3px;font-size:9.5px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545;vertical-align:middle;}
+/* A안 닷플롯 */
+.rpt_v10 .dp{margin-top:4px;border-top:2px solid #293138;}
+.rpt_v10 .dprow{display:flex;align-items:center;height:44px;border-bottom:1px solid #e6e6e6;}
+.rpt_v10 .dprow.hdr{height:auto;padding:4px 0 3px;background:#f7f7f7;border-bottom:1px solid #ccc;font-size:11px;color:#555;align-items:flex-end;}
+.rpt_v10 .dprow.hdr.ph{margin-top:10px;border-top:1px solid #ccc;}
+.rpt_v10 .dprow .nm{flex:0 0 118px;padding-left:8px;font-size:12.5px;font-weight:700;color:var(--c);white-space:nowrap;}
+.rpt_v10 .dprow .nm .tg{margin-left:5px;}
+.rpt_v10 .dprow .ax{flex:1;position:relative;height:100%;background-image:repeating-linear-gradient(to right,transparent 0 calc(100%/16 - 1px),#eee calc(100%/16 - 1px) calc(100%/16));}
+.rpt_v10 .dprow .ax.n7{background-image:repeating-linear-gradient(to right,transparent 0 calc(100%/7 - 1px),#eee calc(100%/7 - 1px) calc(100%/7));}
+.rpt_v10 .dprow .ax.lab{height:auto;background:none;}
+.rpt_v10 .dprow .ax .grp{display:grid;grid-template-columns:repeat(16,1fr);font-weight:700;font-size:11px;color:#333;text-align:center;}
+.rpt_v10 .dprow .ax .grp b{border-left:1px solid #ddd;} .rpt_v10 .dprow .ax .grp b:first-child{border-left:0;}
+.rpt_v10 .dprow .ax .cel{display:grid;grid-template-columns:repeat(16,1fr);font-size:10.5px;color:#666;text-align:center;margin-top:2px;}
+.rpt_v10 .dprow .ax.n7 .cel{grid-template-columns:repeat(7,1fr);}
+.rpt_v10 .dprow .ax .cel b{font-weight:400;border-left:1px solid #e3e3e3;} .rpt_v10 .dprow .ax .cel b:first-child{border-left:0;}
+.rpt_v10 .dprow .ax i.me{position:absolute;top:50%;width:14px;height:14px;margin:-7px 0 0 -7px;border-radius:50%;background:var(--c);box-shadow:0 0 0 2px #fff;}
+.rpt_v10 .dprow .ax i.me em{position:absolute;left:19px;top:0;font-style:normal;font-size:10.5px;font-weight:700;color:var(--c);white-space:nowrap;line-height:14px;}
+.rpt_v10 .dprow .ax i.av{position:absolute;bottom:3px;width:0;height:0;margin-left:-6px;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:10px solid #555;}
+.rpt_v10 .dprow .sc{flex:0 0 118px;padding-left:14px;font-size:11px;color:#999;}
+.rpt_v10 .dprow .pr{flex:0 0 118px;padding-left:8px;font-size:11px;color:#999;}
+.rpt_v10 .dprow .sc b,.rpt_v10 .dprow .pr b{display:block;font-size:14px;color:#333;line-height:1.2;}
+.rpt_v10 .dprow .pr b{color:#e64545;}
+.rpt_v10 .dprow.hdr .sc,.rpt_v10 .dprow.hdr .pr{font-weight:700;color:#333;font-size:11px;padding-bottom:1px;}
+/* B안 표 */
+.rpt_v10 .tb{width:100%;margin-top:4px;border-top:2px solid #293138;table-layout:fixed;}
+.rpt_v10 .tb th,.rpt_v10 .tb td{height:52px;border-bottom:1px solid #e6e6e6;text-align:center;font-size:13px;color:#333;}
+.rpt_v10 .tb thead th{height:34px;background:#f7f7f7;font-size:12px;font-weight:700;color:#555;border-bottom:1px solid #ccc;}
+.rpt_v10 .tb tbody th{font-weight:700;color:var(--c);font-size:13px;}
+.rpt_v10 .tb td b{font-size:15px;font-weight:800;} .rpt_v10 .tb td b.pos{color:#e64545;}
+.rpt_v10 .tb td small{display:block;font-size:11px;color:#999;margin-top:1px;}
+.rpt_v10 .tb td.lv b{color:var(--c);}
+.rpt_v10 .tb td .cmp{font-style:normal;margin-left:6px;font-size:12px;color:#777;}
+.rpt_v10 .v2b .pboxes{margin-top:18px;}
+/* C안 카드 */
+.rpt_v10 .cds{display:flex;gap:14px;margin-top:4px;}
+.rpt_v10 .cd{flex:1;min-width:0;padding:12px 14px 10px;border:1px solid #e0e0e0;border-top:3px solid var(--c);border-radius:4px;}
+.rpt_v10 .cd .hd{display:flex;align-items:center;font-size:12.5px;font-weight:700;color:var(--c);height:20px;}
+.rpt_v10 .cd .lv{margin-top:8px;font-size:19px;font-weight:800;color:#333;letter-spacing:-.3px;}
+.rpt_v10 .cd .mb{position:relative;height:12px;margin:14px 0 4px;border-radius:0 6px 6px 0;background:#f1f1f1;}
+.rpt_v10 .cd .mb .fill{position:absolute;left:0;top:0;height:100%;border-radius:0 6px 6px 0;background:var(--c);opacity:.9;}
+.rpt_v10 .cd .mb .av{position:absolute;top:-4px;width:0;height:0;margin-left:-5px;border-left:5px solid transparent;border-right:5px solid transparent;border-top:9px solid #555;}
+.rpt_v10 .cd .avl{margin-top:5px;font-size:10.5px;color:#888;}
+.rpt_v10 .cd .rw{display:flex;align-items:baseline;gap:6px;margin-top:10px;padding-top:9px;border-top:1px dashed #e6e6e6;font-size:11px;color:#888;}
+.rpt_v10 .cd .rw span{flex:none;min-width:28px;margin-right:2px;} .rpt_v10 .cd .rw b{font-size:15px;font-weight:800;color:#333;} .rpt_v10 .cd .rw b.pos{color:#e64545;} .rpt_v10 .cd .rw small{font-size:10.5px;color:#999;}
+
+/* C1: 하단 박스를 카드 4열 그리드에 맞춤 */
+.rpt_v10 .pboxes.g4{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;}
+.rpt_v10 .pboxes.g4 .pbox.c-lr{grid-column:span 2;}
+.rpt_v10 .pboxes.g4 .pbox{padding:12px 14px;}
+.rpt_v10 .pboxes.g4 .pbox p{-webkit-line-clamp:3;}
+/* C2: 종합 처방 한 박스 */
+.rpt_v10 .sumbox{margin-top:16px;padding:14px 20px 14px 20px;border:1.5px solid #c9d3e0;border-radius:6px;background:#f4f7fb;font-size:13px;line-height:1.75;color:#444;}
+.rpt_v10 .sumbox .sh{font-size:12px;font-weight:800;color:#345;margin-bottom:4px;letter-spacing:-.2px;}
+.rpt_v10 .sumbox p b{color:#333;font-weight:700;}
+.rpt_v10 .sumbox p.go{margin-top:6px;padding-top:8px;border-top:1px dashed #c9d3e0;}
+.rpt_v10 .sumbox p.go b{color:#e64545;}
+
+/* C2: 영역별 처방 한 박스 */
+.rpt_v10 .sumbox.one{padding:12px 20px 8px;background:#fafafa;border-color:#ddd;}
+.rpt_v10 .sumbox.one .sh{color:#333;margin-bottom:6px;}
+.rpt_v10 .sumbox .sr{display:flex;gap:14px;align-items:flex-start;padding:7px 0;border-top:1px dashed #e3e3e3;line-height:1.6;}
+.rpt_v10 .sumbox .sr:first-child{border-top:0;padding-top:2px;}
+.rpt_v10 .sumbox .sr .lab{flex:0 0 150px;font-size:12px;font-weight:800;color:var(--bc);padding-top:1px;}
+.rpt_v10 .sumbox .sr .tx{flex:1;min-width:0;}
+.rpt_v10 .sumbox .sr .tx b{display:block;color:#333;font-weight:700;}
+.rpt_v10 .sumbox .sr .tx p{margin:0;color:#555;}
+
+/* v9: 2p 상하 채우기 */
+.rpt_v10 .p2.v2c{display:flex;flex-direction:column;min-height:500px;}
+.rpt_v10 .p2.v2c dl{flex:none;}
+.rpt_v10 .p2.v2c .pboxes{flex:1;margin-top:18px;}
+.rpt_v10 .p2.v2c .pboxes .pbox{display:flex;flex-direction:column;justify-content:flex-start;font-size:13px;line-height:1.75;padding:16px 18px;}
+.rpt_v10 .p2.v2c .pboxes .pbox b{font-size:13.5px;margin-bottom:6px;}
+.rpt_v10 .p2.v2c .pboxes .pbox p{-webkit-line-clamp:4;}
+.rpt_v10 .cd{padding:18px 16px 16px;}
+.rpt_v10 .cd .hd{height:22px;font-size:13px;}
+.rpt_v10 .cd .lv{margin-top:10px;font-size:20px;}
+.rpt_v10 .cd .mb{margin:22px 0 8px;height:13px;}
+.rpt_v10 .cd .rw{margin-top:14px;padding-top:13px;font-size:12px;}
+.rpt_v10 .cd .rw b{font-size:16px;}
+
+/* 정답률 한 줄 버전: 카드 높이 유지 */
+.rpt_v10 .cd .mb{margin:30px 0 14px;}
+.rpt_v10 .cd .rw{margin-top:18px;padding-top:16px;padding-bottom:12px;}
+/* 미리보기 2: 처방 박스 = 본문 + 한 줄 여유, 카드-박스 간격 2배(32px), 남는 높이는 카드가 흡수 */
+.rpt_v10 .p2.v2c .pboxes{flex:none;margin-top:32px;}
+.rpt_v10 .p2.v2c .pboxes .pbox{justify-content:flex-start;padding:16px 18px 38px;}
+.rpt_v10 .p2.v2c dl{flex:1;display:flex;flex-direction:column;}
+.rpt_v10 .p2.v2c dd{flex:1;display:flex;}
+.rpt_v10 .cds{flex:1;align-items:stretch;}
+.rpt_v10 .cd{display:flex;flex-direction:column;padding:18px 16px 16px;}
+.rpt_v10 .cd .lv{margin-top:12px;font-size:22px;}
+.rpt_v10 .cd .mb{margin:auto 0;height:14px;}
+.rpt_v10 .cd .rw{margin-top:0;padding-top:16px;padding-bottom:2px;font-size:12.5px;}
+.rpt_v10 .cd .rw b{font-size:18px;}
+</style></head><body><nav class="mk_bar"><strong>진단평가 리포트 · v12</strong><span class="grp">응시 조합</span><a href="#" data-s="e4_all" class="on">초4 전 영역</a><a href="#" data-s="e1_plr" class="">초1 파닉스+듣말+읽쓰</a><a href="#" data-s="e6_all_low" class="">초6 전 영역·평균 이하</a><a href="#" data-s="m1_lrg" class="">중1 듣말+읽쓰+문법</a><a href="#" data-s="h1_all" class="">고1 전 영역</a><a href="#" data-s="e3_p" class="">초3 파닉스만</a><a href="#" data-s="e4_pg" class="">초4 파닉스+문법</a><span class="hint">점수·수준·위치 실제 응시 기록 · 처방 문구는 현행 샘플(자리표시)</span></nav><nav class="mk_bar mk_bar2"><span class="grp">페이지</span><a href="#" data-t="p1" class="on">1페이지</a><a href="#" data-t="p2">2페이지</a><a href="#" data-t="pr">인쇄용 (A4 · 초4 전 영역)</a></nav><div class="spane" data-s="e4_all" style=""><div class="tabpane" data-t="p1"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div><div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">2025.08.27</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div><dl><dd><span>이름</span><span id="reportName">예시 학생 A</span></dd><dd><span>학년</span><span id="reportYear">초등 4</span></dd></dl></div></div></div><div class="rep"><div class="content"><div class="slide_pa"><div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> <span class="level visib" style="width: unset; visibility: visible;">Rising Star 초4</span></dt><dd><div class="tableLayout_wrap"><table data-1-level id="te4_all"><colgroup><col width="*"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="6%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"></colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td data-level="Rookie초1" class="" data-curri-stg="Rookie" data-curri-level="초1">초1<span></span></td><td data-level="Rookie초2" class="borderright" data-curri-stg="Rookie" data-curri-level="초2">초2</td><td data-level="RisingStar초3" class="" data-curri-stg="RisingStar" data-curri-level="초3">초3<span></span></td><td data-level="RisingStar초4" class="borderright bgred" data-curri-stg="RisingStar" data-curri-level="초4">초4</td><td data-level="AllStar초5" class="" data-curri-stg="AllStar" data-curri-level="초5">초5<span></span></td><td data-level="AllStar초6" class="borderright" data-curri-stg="AllStar" data-curri-level="초6">초6</td><td data-level="MVP예비중" class="borderright" data-curri-stg="MVP" data-curri-level="예비중">예비중</td><td data-level="중고등1" class="" data-curri-stg="중고등" data-curri-level="1">1<span></span></td><td data-level="중고등2" class="" data-curri-stg="중고등" data-curri-level="2">2<span></span></td><td data-level="중고등3" class="" data-curri-stg="중고등" data-curri-level="3">3<span></span></td><td data-level="중고등4" class="" data-curri-stg="중고등" data-curri-level="4">4<span></span></td><td data-level="중고등5" class="" data-curri-stg="중고등" data-curri-level="5">5<span></span></td><td data-level="중고등6" class="" data-curri-stg="중고등" data-curri-level="6">6<span></span></td><td data-level="중고등7" class="" data-curri-stg="중고등" data-curri-level="7">7<span></span></td><td data-level="중고등8" class="" data-curri-stg="중고등" data-curri-level="8">8<span></span></td><td data-level="중고등9" class="" data-curri-stg="중고등" data-curri-level="9">9</td></tr></table></div></dd></dl></div></div><div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd><div style="width:300px; height:260px;"><div class="v12gs n4"><div class="v12g"><div id="ce4_all_s1" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce4_all_s2" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce4_all_s3" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce4_all_s4" style="width:100%; height:130px;"></div></div></div></div></dd></dl></div><div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd><div class="graph_wrap" style="height:280px"><div id="ce4_all_pos" style="width:100%;height:260px;"></div></div><div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span><b>읽기/쓰기</b>가 듣기/말하기보다 낮은 <b>Rising Star 초4</b> 단계라, 이 단계부터 시작하세요.<br>초4 응시자 중 <b>상위 42%</b>로, <b>평균 구간</b>이에요.</div></dd></dl></div></div></div></div></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('ce4_all_s1','파닉스',75,'#ef7c00');v12Gauge('ce4_all_s2','듣기/말하기',84.6,'#0a953d');v12Gauge('ce4_all_s3','읽기/쓰기',60,'#0078bf');v12Gauge('ce4_all_s4','문법',70,'#7b5aa3');v12Bell("ce4_all_pos",41.8);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></div><div class="tabpane" data-t="p2" style="display:none"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2025.08.27</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 A</span></dd><dd><span>학년</span><span>초등 4</span></dd></dl></div></div></div><div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa"><div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span><span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><dd><div class="cds" style=""><div class="cd" style="--c:#ef7c00"><div class="hd"><span class="nm">파닉스</span></div><div class="lv">장모음</div><div class="mb"><i class="fill" style="width:57.1%"></i><i class="av" style="left:50.0%"></i></div><div class="rw"><span>정답률</span><b>75%</b><small>9 / 12문항</small></div></div><div class="cd" style="--c:#0a953d"><div class="hd"><span class="nm">듣기/말하기</span></div><div class="lv">All-Star 초6</div><div class="mb"><i class="fill" style="width:37.5%"></i><i class="av" style="left:28.1%"></i></div><div class="rw"><span>정답률</span><b>84.6%</b><small>11 / 13문항</small></div></div><div class="cd" style="--c:#0078bf"><div class="hd"><span class="nm">읽기/쓰기</span></div><div class="lv">Rising Star 초4</div><div class="mb"><i class="fill" style="width:25.0%"></i><i class="av" style="left:21.9%"></i></div><div class="rw"><span>정답률</span><b>60%</b><small>6 / 10문항</small></div></div><div class="cd" style="--c:#7b5aa3"><div class="hd"><span class="nm">문법</span></div><div class="lv">All-Star 초5</div><div class="mb"><i class="fill" style="width:31.2%"></i><i class="av" style="left:21.9%"></i></div><div class="rw"><span>정답률</span><b>70%</b><small>7 / 10문항</small></div></div></div></dd></dl><div class="pboxes g4" style="grid-template-columns:repeat(4,1fr);"><div class="pbox c-p" style="grid-column:span 1"><b>장모음까지 잘 이해하고 있네요.</b><p>연속자음(fr, gr, br, pr, fl, gl, bl, pl)부터 파닉스 학습을 꾸준히 이어가세요.</p></div><div class="pbox c-lr" style="grid-column:span 2"><b>공교육 기준 초등 4~5학년 수준으로, 듣기/말하기 실력은 우수하나 읽기/쓰기 능력이 다소 취약합니다.</b><p>다양한 이야기를 통해 읽기 유창성을 기르는 것이 필요합니다. 읽은 내용을 바탕으로 생각을 정리하고 논리적으로 글을 쓰는 훈련도 시작해보세요.</p></div><div class="pbox c-g" style="grid-column:span 1"><b>초등 필수 문법을 완성하는 것이 필요합니다.</b><p>초등 문법의 기본기를 완성하여 읽기, 쓰기에 적용하는 능력을 길러보세요.</p></div></div></div></div></div></div><div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section></div></div><div class="spane" data-s="e1_plr" style="display:none"><div class="tabpane" data-t="p1"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div><div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">2025.07.28</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div><dl><dd><span>이름</span><span id="reportName">예시 학생 B</span></dd><dd><span>학년</span><span id="reportYear">초등 1</span></dd></dl></div></div></div><div class="rep"><div class="content"><div class="slide_pa"><div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> <span class="level visib" style="width: unset; visibility: visible;">Rookie 초2</span></dt><dd><div class="tableLayout_wrap"><table data-1-level id="te1_plr"><colgroup><col width="*"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="6%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"></colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td data-level="Rookie초1" class="" data-curri-stg="Rookie" data-curri-level="초1">초1<span></span></td><td data-level="Rookie초2" class="borderright bgred" data-curri-stg="Rookie" data-curri-level="초2">초2</td><td data-level="RisingStar초3" class="" data-curri-stg="RisingStar" data-curri-level="초3">초3<span></span></td><td data-level="RisingStar초4" class="borderright" data-curri-stg="RisingStar" data-curri-level="초4">초4</td><td data-level="AllStar초5" class="" data-curri-stg="AllStar" data-curri-level="초5">초5<span></span></td><td data-level="AllStar초6" class="borderright" data-curri-stg="AllStar" data-curri-level="초6">초6</td><td data-level="MVP예비중" class="borderright" data-curri-stg="MVP" data-curri-level="예비중">예비중</td><td data-level="중고등1" class="" data-curri-stg="중고등" data-curri-level="1">1<span></span></td><td data-level="중고등2" class="" data-curri-stg="중고등" data-curri-level="2">2<span></span></td><td data-level="중고등3" class="" data-curri-stg="중고등" data-curri-level="3">3<span></span></td><td data-level="중고등4" class="" data-curri-stg="중고등" data-curri-level="4">4<span></span></td><td data-level="중고등5" class="" data-curri-stg="중고등" data-curri-level="5">5<span></span></td><td data-level="중고등6" class="" data-curri-stg="중고등" data-curri-level="6">6<span></span></td><td data-level="중고등7" class="" data-curri-stg="중고등" data-curri-level="7">7<span></span></td><td data-level="중고등8" class="" data-curri-stg="중고등" data-curri-level="8">8<span></span></td><td data-level="중고등9" class="" data-curri-stg="중고등" data-curri-level="9">9</td></tr></table></div></dd></dl></div></div><div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd><div style="width:300px; height:260px;"><div class="v12gs n3"><div class="v12g"><div id="ce1_plr_s1" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce1_plr_s2" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce1_plr_s3" style="width:100%; height:130px;"></div></div></div></div></dd></dl></div><div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd><div class="graph_wrap" style="height:280px"><div id="ce1_plr_pos" style="width:100%;height:260px;"></div></div><div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span>듣기/말하기·읽기/쓰기 모두 <b>Rookie 초2</b> 수준이라, 이 단계 처음부터 시작하세요.<br>초1 응시자 중 <b>상위 67%</b>로, <b>평균 구간</b>이에요.</div></dd></dl></div></div></div></div></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('ce1_plr_s1','파닉스',75,'#ef7c00');v12Gauge('ce1_plr_s2','듣기/말하기',70,'#0a953d');v12Gauge('ce1_plr_s3','읽기/쓰기',60,'#0078bf');v12Bell("ce1_plr_pos",66.8);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></div><div class="tabpane" data-t="p2" style="display:none"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2025.07.28</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 B</span></dd><dd><span>학년</span><span>초등 1</span></dd></dl></div></div></div><div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa"><div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span><span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><dd><div class="cds" style=""><div class="cd" style="--c:#ef7c00"><div class="hd"><span class="nm">파닉스</span></div><div class="lv">단모음</div><div class="mb"><i class="fill" style="width:42.9%"></i><i class="av" style="left:50.0%"></i></div><div class="rw"><span>정답률</span><b>75%</b><small>9 / 12문항</small></div></div><div class="cd" style="--c:#0a953d"><div class="hd"><span class="nm">듣기/말하기</span></div><div class="lv">Rookie 초2</div><div class="mb"><i class="fill" style="width:12.5%"></i><i class="av" style="left:9.4%"></i></div><div class="rw"><span>정답률</span><b>70%</b><small>7 / 10문항</small></div></div><div class="cd" style="--c:#0078bf"><div class="hd"><span class="nm">읽기/쓰기</span></div><div class="lv">Rookie 초2</div><div class="mb"><i class="fill" style="width:12.5%"></i><i class="av" style="left:9.4%"></i></div><div class="rw"><span>정답률</span><b>60%</b><small>6 / 10문항</small></div></div></div></dd></dl><div class="pboxes g4" style="grid-template-columns:repeat(3,1fr);"><div class="pbox c-p" style="grid-column:span 1"><b>장모음까지 잘 이해하고 있네요.</b><p>연속자음(fr, gr, br, pr, fl, gl, bl, pl)부터 파닉스 학습을 꾸준히 이어가세요.</p></div><div class="pbox c-lr" style="grid-column:span 2"><b>공교육 기준 초등 4~5학년 수준으로, 듣기/말하기 실력은 우수하나 읽기/쓰기 능력이 다소 취약합니다.</b><p>다양한 이야기를 통해 읽기 유창성을 기르는 것이 필요합니다. 읽은 내용을 바탕으로 생각을 정리하고 논리적으로 글을 쓰는 훈련도 시작해보세요.</p></div></div></div></div></div></div><div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section></div></div><div class="spane" data-s="e6_all_low" style="display:none"><div class="tabpane" data-t="p1"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div><div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">2025.10.13</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div><dl><dd><span>이름</span><span id="reportName">예시 학생 C</span></dd><dd><span>학년</span><span id="reportYear">초등 6</span></dd></dl></div></div></div><div class="rep"><div class="content"><div class="slide_pa"><div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> <span class="level visib" style="width: unset; visibility: visible;">Rising Star 초4</span></dt><dd><div class="tableLayout_wrap"><table data-1-level id="te6_all_low"><colgroup><col width="*"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="6%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"></colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td data-level="Rookie초1" class="" data-curri-stg="Rookie" data-curri-level="초1">초1<span></span></td><td data-level="Rookie초2" class="borderright" data-curri-stg="Rookie" data-curri-level="초2">초2</td><td data-level="RisingStar초3" class="" data-curri-stg="RisingStar" data-curri-level="초3">초3<span></span></td><td data-level="RisingStar초4" class="borderright bgred" data-curri-stg="RisingStar" data-curri-level="초4">초4</td><td data-level="AllStar초5" class="" data-curri-stg="AllStar" data-curri-level="초5">초5<span></span></td><td data-level="AllStar초6" class="borderright" data-curri-stg="AllStar" data-curri-level="초6">초6</td><td data-level="MVP예비중" class="borderright" data-curri-stg="MVP" data-curri-level="예비중">예비중</td><td data-level="중고등1" class="" data-curri-stg="중고등" data-curri-level="1">1<span></span></td><td data-level="중고등2" class="" data-curri-stg="중고등" data-curri-level="2">2<span></span></td><td data-level="중고등3" class="" data-curri-stg="중고등" data-curri-level="3">3<span></span></td><td data-level="중고등4" class="" data-curri-stg="중고등" data-curri-level="4">4<span></span></td><td data-level="중고등5" class="" data-curri-stg="중고등" data-curri-level="5">5<span></span></td><td data-level="중고등6" class="" data-curri-stg="중고등" data-curri-level="6">6<span></span></td><td data-level="중고등7" class="" data-curri-stg="중고등" data-curri-level="7">7<span></span></td><td data-level="중고등8" class="" data-curri-stg="중고등" data-curri-level="8">8<span></span></td><td data-level="중고등9" class="" data-curri-stg="중고등" data-curri-level="9">9</td></tr></table></div></dd></dl></div></div><div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd><div style="width:300px; height:260px;"><div class="v12gs n4"><div class="v12g"><div id="ce6_all_low_s1" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce6_all_low_s2" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce6_all_low_s3" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce6_all_low_s4" style="width:100%; height:130px;"></div></div></div></div></dd></dl></div><div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd><div class="graph_wrap" style="height:280px"><div id="ce6_all_low_pos" style="width:100%;height:260px;"></div></div><div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span><b>읽기/쓰기</b>가 듣기/말하기보다 낮은 <b>Rising Star 초4</b> 단계라, 이 단계부터 시작하세요.<br>초6 응시자 중 <b>상위 80% 이하</b>로, <b>평균 이하 구간</b>이에요.</div></dd></dl></div></div></div></div></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('ce6_all_low_s1','파닉스',50,'#ef7c00');v12Gauge('ce6_all_low_s2','듣기/말하기',66.7,'#0a953d');v12Gauge('ce6_all_low_s3','읽기/쓰기',16.7,'#0078bf');v12Gauge('ce6_all_low_s4','문법',40,'#7b5aa3');v12Bell("ce6_all_low_pos",87.7);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></div><div class="tabpane" data-t="p2" style="display:none"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2025.10.13</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 C</span></dd><dd><span>학년</span><span>초등 6</span></dd></dl></div></div></div><div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa"><div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span><span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><dd><div class="cds" style=""><div class="cd" style="--c:#ef7c00"><div class="hd"><span class="nm">파닉스</span></div><div class="lv">단모음</div><div class="mb"><i class="fill" style="width:42.9%"></i><i class="av" style="left:21.4%"></i></div><div class="rw"><span>정답률</span><b>50%</b><small>4 / 8문항</small></div></div><div class="cd" style="--c:#0a953d"><div class="hd"><span class="nm">듣기/말하기</span></div><div class="lv">MVP 예비중</div><div class="mb"><i class="fill" style="width:43.8%"></i><i class="av" style="left:40.6%"></i></div><div class="rw"><span>정답률</span><b>66.7%</b><small>8 / 12문항</small></div></div><div class="cd" style="--c:#0078bf"><div class="hd"><span class="nm">읽기/쓰기</span></div><div class="lv">Rising Star 초4</div><div class="mb"><i class="fill" style="width:25.0%"></i><i class="av" style="left:34.4%"></i></div><div class="rw"><span>정답률</span><b>16.7%</b><small>2 / 12문항</small></div></div><div class="cd" style="--c:#7b5aa3"><div class="hd"><span class="nm">문법</span></div><div class="lv">All-Star 초5</div><div class="mb"><i class="fill" style="width:31.2%"></i><i class="av" style="left:34.4%"></i></div><div class="rw"><span>정답률</span><b>40%</b><small>4 / 10문항</small></div></div></div></dd></dl><div class="pboxes g4" style="grid-template-columns:repeat(4,1fr);"><div class="pbox c-p" style="grid-column:span 1"><b>장모음까지 잘 이해하고 있네요.</b><p>연속자음(fr, gr, br, pr, fl, gl, bl, pl)부터 파닉스 학습을 꾸준히 이어가세요.</p></div><div class="pbox c-lr" style="grid-column:span 2"><b>공교육 기준 초등 4~5학년 수준으로, 듣기/말하기 실력은 우수하나 읽기/쓰기 능력이 다소 취약합니다.</b><p>다양한 이야기를 통해 읽기 유창성을 기르는 것이 필요합니다. 읽은 내용을 바탕으로 생각을 정리하고 논리적으로 글을 쓰는 훈련도 시작해보세요.</p></div><div class="pbox c-g" style="grid-column:span 1"><b>초등 필수 문법을 완성하는 것이 필요합니다.</b><p>초등 문법의 기본기를 완성하여 읽기, 쓰기에 적용하는 능력을 길러보세요.</p></div></div></div></div></div></div><div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section></div></div><div class="spane" data-s="m1_lrg" style="display:none"><div class="tabpane" data-t="p1"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div><div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">2025.06.16</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div><dl><dd><span>이름</span><span id="reportName">예시 학생 D</span></dd><dd><span>학년</span><span id="reportYear">중등 1</span></dd></dl></div></div></div><div class="rep"><div class="content"><div class="slide_pa"><div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> <span class="level visib" style="width: unset; visibility: visible;">중고등 1</span></dt><dd><div class="tableLayout_wrap"><table data-1-level id="tm1_lrg"><colgroup><col width="*"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="6%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"></colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td data-level="Rookie초1" class="" data-curri-stg="Rookie" data-curri-level="초1">초1<span></span></td><td data-level="Rookie초2" class="borderright" data-curri-stg="Rookie" data-curri-level="초2">초2</td><td data-level="RisingStar초3" class="" data-curri-stg="RisingStar" data-curri-level="초3">초3<span></span></td><td data-level="RisingStar초4" class="borderright" data-curri-stg="RisingStar" data-curri-level="초4">초4</td><td data-level="AllStar초5" class="" data-curri-stg="AllStar" data-curri-level="초5">초5<span></span></td><td data-level="AllStar초6" class="borderright" data-curri-stg="AllStar" data-curri-level="초6">초6</td><td data-level="MVP예비중" class="borderright" data-curri-stg="MVP" data-curri-level="예비중">예비중</td><td data-level="중고등1" class=" bgred" data-curri-stg="중고등" data-curri-level="1">1<span></span></td><td data-level="중고등2" class="" data-curri-stg="중고등" data-curri-level="2">2<span></span></td><td data-level="중고등3" class="" data-curri-stg="중고등" data-curri-level="3">3<span></span></td><td data-level="중고등4" class="" data-curri-stg="중고등" data-curri-level="4">4<span></span></td><td data-level="중고등5" class="" data-curri-stg="중고등" data-curri-level="5">5<span></span></td><td data-level="중고등6" class="" data-curri-stg="중고등" data-curri-level="6">6<span></span></td><td data-level="중고등7" class="" data-curri-stg="중고등" data-curri-level="7">7<span></span></td><td data-level="중고등8" class="" data-curri-stg="중고등" data-curri-level="8">8<span></span></td><td data-level="중고등9" class="" data-curri-stg="중고등" data-curri-level="9">9</td></tr></table></div></dd></dl></div></div><div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd><div style="width:300px; height:260px;"><div class="v12gs n3"><div class="v12g"><div id="cm1_lrg_s1" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="cm1_lrg_s2" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="cm1_lrg_s3" style="width:100%; height:130px;"></div></div></div></div></dd></dl></div><div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd><div class="graph_wrap" style="height:280px"><div id="cm1_lrg_pos" style="width:100%;height:260px;"></div></div><div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span>듣기/말하기·읽기/쓰기 모두 <b>중고등 1</b> 수준이라, 이 단계 처음부터 시작하세요.<br>중1 응시자 중 <b>상위 73%</b>로, <b>평균 구간</b>이에요.</div></dd></dl></div></div></div></div></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('cm1_lrg_s1','듣기/말하기',58.3,'#0a953d');v12Gauge('cm1_lrg_s2','읽기/쓰기',50,'#0078bf');v12Gauge('cm1_lrg_s3','문법',30,'#7b5aa3');v12Bell("cm1_lrg_pos",73.4);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></div><div class="tabpane" data-t="p2" style="display:none"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2025.06.16</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 D</span></dd><dd><span>학년</span><span>중등 1</span></dd></dl></div></div></div><div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa"><div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span><span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><dd><div class="cds" style=""><div class="cd" style="--c:#0a953d"><div class="hd"><span class="nm">듣기/말하기</span></div><div class="lv">중고등 1</div><div class="mb"><i class="fill" style="width:50.0%"></i><i class="av" style="left:53.1%"></i></div><div class="rw"><span>정답률</span><b>58.3%</b><small>7 / 12문항</small></div></div><div class="cd" style="--c:#0078bf"><div class="hd"><span class="nm">읽기/쓰기</span></div><div class="lv">중고등 1</div><div class="mb"><i class="fill" style="width:50.0%"></i><i class="av" style="left:46.9%"></i></div><div class="rw"><span>정답률</span><b>50%</b><small>6 / 12문항</small></div></div><div class="cd" style="--c:#7b5aa3"><div class="hd"><span class="nm">문법</span></div><div class="lv">MVP 예비중</div><div class="mb"><i class="fill" style="width:43.8%"></i><i class="av" style="left:46.9%"></i></div><div class="rw"><span>정답률</span><b>30%</b><small>3 / 10문항</small></div></div></div></dd></dl><div class="pboxes g4" style="grid-template-columns:repeat(3,1fr);"><div class="pbox c-lr" style="grid-column:span 2"><b>공교육 기준 초등 4~5학년 수준으로, 듣기/말하기 실력은 우수하나 읽기/쓰기 능력이 다소 취약합니다.</b><p>다양한 이야기를 통해 읽기 유창성을 기르는 것이 필요합니다. 읽은 내용을 바탕으로 생각을 정리하고 논리적으로 글을 쓰는 훈련도 시작해보세요.</p></div><div class="pbox c-g" style="grid-column:span 1"><b>초등 필수 문법을 완성하는 것이 필요합니다.</b><p>초등 문법의 기본기를 완성하여 읽기, 쓰기에 적용하는 능력을 길러보세요.</p></div></div></div></div></div></div><div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section></div></div><div class="spane" data-s="h1_all" style="display:none"><div class="tabpane" data-t="p1"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div><div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">2026.03.07</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div><dl><dd><span>이름</span><span id="reportName">예시 학생 E</span></dd><dd><span>학년</span><span id="reportYear">고등 1</span></dd></dl></div></div></div><div class="rep"><div class="content"><div class="slide_pa"><div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> <span class="level visib" style="width: unset; visibility: visible;">중고등 5</span></dt><dd><div class="tableLayout_wrap"><table data-1-level id="th1_all"><colgroup><col width="*"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="6%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"></colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td data-level="Rookie초1" class="" data-curri-stg="Rookie" data-curri-level="초1">초1<span></span></td><td data-level="Rookie초2" class="borderright" data-curri-stg="Rookie" data-curri-level="초2">초2</td><td data-level="RisingStar초3" class="" data-curri-stg="RisingStar" data-curri-level="초3">초3<span></span></td><td data-level="RisingStar초4" class="borderright" data-curri-stg="RisingStar" data-curri-level="초4">초4</td><td data-level="AllStar초5" class="" data-curri-stg="AllStar" data-curri-level="초5">초5<span></span></td><td data-level="AllStar초6" class="borderright" data-curri-stg="AllStar" data-curri-level="초6">초6</td><td data-level="MVP예비중" class="borderright" data-curri-stg="MVP" data-curri-level="예비중">예비중</td><td data-level="중고등1" class="" data-curri-stg="중고등" data-curri-level="1">1<span></span></td><td data-level="중고등2" class="" data-curri-stg="중고등" data-curri-level="2">2<span></span></td><td data-level="중고등3" class="" data-curri-stg="중고등" data-curri-level="3">3<span></span></td><td data-level="중고등4" class="" data-curri-stg="중고등" data-curri-level="4">4<span></span></td><td data-level="중고등5" class=" bgred" data-curri-stg="중고등" data-curri-level="5">5<span></span></td><td data-level="중고등6" class="" data-curri-stg="중고등" data-curri-level="6">6<span></span></td><td data-level="중고등7" class="" data-curri-stg="중고등" data-curri-level="7">7<span></span></td><td data-level="중고등8" class="" data-curri-stg="중고등" data-curri-level="8">8<span></span></td><td data-level="중고등9" class="" data-curri-stg="중고등" data-curri-level="9">9</td></tr></table></div></dd></dl></div></div><div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd><div style="width:300px; height:260px;"><div class="v12gs n4"><div class="v12g"><div id="ch1_all_s1" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ch1_all_s2" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ch1_all_s3" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ch1_all_s4" style="width:100%; height:130px;"></div></div></div></div></dd></dl></div><div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd><div class="graph_wrap" style="height:280px"><div id="ch1_all_pos" style="width:100%;height:260px;"></div></div><div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span>듣기/말하기·읽기/쓰기 모두 <b>중고등 5</b> 수준이라, 이 단계 처음부터 시작하세요.<br>고1 응시자 중 <b>상위 45%</b>로, <b>평균 구간</b>이에요.</div></dd></dl></div></div></div></div></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('ch1_all_s1','파닉스',87.5,'#ef7c00');v12Gauge('ch1_all_s2','듣기/말하기',66.7,'#0a953d');v12Gauge('ch1_all_s3','읽기/쓰기',83.3,'#0078bf');v12Gauge('ch1_all_s4','문법',40,'#7b5aa3');v12Bell("ch1_all_pos",44.9);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></div><div class="tabpane" data-t="p2" style="display:none"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2026.03.07</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 E</span></dd><dd><span>학년</span><span>고등 1</span></dd></dl></div></div></div><div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa"><div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span><span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><dd><div class="cds" style=""><div class="cd" style="--c:#ef7c00"><div class="hd"><span class="nm">파닉스</span></div><div class="lv">Advanced</div><div class="mb"><i class="fill" style="width:75.0%"></i><i class="av" style="left:37.5%"></i></div><div class="rw"><span>정답률</span><b>87.5%</b><small>7 / 8문항</small></div></div><div class="cd" style="--c:#0a953d"><div class="hd"><span class="nm">듣기/말하기</span></div><div class="lv">중고등 5</div><div class="mb"><i class="fill" style="width:75.0%"></i><i class="av" style="left:71.9%"></i></div><div class="rw"><span>정답률</span><b>66.7%</b><small>8 / 12문항</small></div></div><div class="cd" style="--c:#0078bf"><div class="hd"><span class="nm">읽기/쓰기</span></div><div class="lv">중고등 5</div><div class="mb"><i class="fill" style="width:75.0%"></i><i class="av" style="left:65.6%"></i></div><div class="rw"><span>정답률</span><b>83.3%</b><small>10 / 12문항</small></div></div><div class="cd" style="--c:#7b5aa3"><div class="hd"><span class="nm">문법</span></div><div class="lv">중고등 2</div><div class="mb"><i class="fill" style="width:56.2%"></i><i class="av" style="left:53.1%"></i></div><div class="rw"><span>정답률</span><b>40%</b><small>4 / 10문항</small></div></div></div></dd></dl><div class="pboxes g4" style="grid-template-columns:repeat(4,1fr);"><div class="pbox c-p" style="grid-column:span 1"><b>장모음까지 잘 이해하고 있네요.</b><p>연속자음(fr, gr, br, pr, fl, gl, bl, pl)부터 파닉스 학습을 꾸준히 이어가세요.</p></div><div class="pbox c-lr" style="grid-column:span 2"><b>공교육 기준 초등 4~5학년 수준으로, 듣기/말하기 실력은 우수하나 읽기/쓰기 능력이 다소 취약합니다.</b><p>다양한 이야기를 통해 읽기 유창성을 기르는 것이 필요합니다. 읽은 내용을 바탕으로 생각을 정리하고 논리적으로 글을 쓰는 훈련도 시작해보세요.</p></div><div class="pbox c-g" style="grid-column:span 1"><b>초등 필수 문법을 완성하는 것이 필요합니다.</b><p>초등 문법의 기본기를 완성하여 읽기, 쓰기에 적용하는 능력을 길러보세요.</p></div></div></div></div></div></div><div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section></div></div><div class="spane" data-s="e3_p" style="display:none"><div class="tabpane" data-t="p1"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div><div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">2025.08.03</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div><dl><dd><span>이름</span><span id="reportName">예시 학생 F</span></dd><dd><span>학년</span><span id="reportYear">초등 3</span></dd></dl></div></div></div><div class="rep"><div class="content"><div class="slide_pa"><div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> <span class="level visib" style="width: unset; visibility: visible;">파닉스 장모음</span><span class="v12cue">메인 커리큘럼 레벨은 듣기/말하기·읽기/쓰기 응시 시 제공</span></dt><dd><div class="tableLayout_wrap"><table data-1-level id="te3_pP" class="v12ph" style="table-layout:fixed;width:100%"><colgroup><col width="69px"><col width="13.4%"><col width="13.4%"><col width="13.4%"><col width="13.4%"><col width="13.4%"><col width="13.4%"><col width="13.4%"></colgroup><tr><th rowspan="2" style="width: unset;">파닉스</th><th>알파벳</th><th>자음</th><th>단모음</th><th>장모음</th><th>기타자음</th><th>기타모음</th><th>Master</th></tr><tr class="height30"><td class="">알파벳</td><td class="">자음</td><td class="">단모음</td><td class="bgred">장모음</td><td class="">기타자음</td><td class="">기타모음</td><td class="">Master</td></tr></table></div></dd></dl></div></div><div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd><div style="width:300px; height:260px;"><div class="v12gs n1"><div class="v12g"><div id="ce3_p_s1" style="width:100%; height:130px;"></div></div></div></div></dd></dl></div><div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd><div class="graph_wrap" style="height:280px"><div id="ce3_p_pos" style="width:100%;height:260px;"></div></div><div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span>파닉스 <b>장모음</b> 단계부터 학습을 시작하세요.<br>초3 응시자 중 <b>상위 66%</b>로, <b>평균 구간</b>이에요.</div></dd></dl></div></div></div></div></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('ce3_p_s1','파닉스',100,'#ef7c00');v12Bell("ce3_p_pos",65.7);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></div><div class="tabpane" data-t="p2" style="display:none"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2025.08.03</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 F</span></dd><dd><span>학년</span><span>초등 3</span></dd></dl></div></div></div><div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa"><div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span><span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><dd><div class="cds" style="max-width:300px;margin-left:auto;margin-right:auto;"><div class="cd" style="--c:#ef7c00"><div class="hd"><span class="nm">파닉스</span></div><div class="lv">장모음</div><div class="mb"><i class="fill" style="width:57.1%"></i><i class="av" style="left:50.0%"></i></div><div class="rw"><span>정답률</span><b>100%</b><small>6 / 6문항</small></div></div></div></dd></dl><div class="pboxes g4" style="grid-template-columns:repeat(1,1fr);max-width:300px;margin-left:auto;margin-right:auto;"><div class="pbox c-p" style="grid-column:span 1"><b>장모음까지 잘 이해하고 있네요.</b><p>연속자음(fr, gr, br, pr, fl, gl, bl, pl)부터 파닉스 학습을 꾸준히 이어가세요.</p></div></div></div></div></div></div><div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section></div></div><div class="spane" data-s="e4_pg" style="display:none"><div class="tabpane" data-t="p1"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div><div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">2026.07.14</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div><dl><dd><span>이름</span><span id="reportName">예시 학생 G</span></dd><dd><span>학년</span><span id="reportYear">초등 4</span></dd></dl></div></div></div><div class="rep"><div class="content"><div class="slide_pa"><div class="asidetop_wrap" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">나에게 맞는 학습 시작점</span> <span class="level visib" style="width: unset; visibility: visible;">All-Star 초5</span></dt><dd><div class="tableLayout_wrap"><table data-1-level id="te4_pg"><colgroup><col width="*"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="6%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"></colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td data-level="Rookie초1" class="" data-curri-stg="Rookie" data-curri-level="초1">초1<span></span></td><td data-level="Rookie초2" class="borderright" data-curri-stg="Rookie" data-curri-level="초2">초2</td><td data-level="RisingStar초3" class="" data-curri-stg="RisingStar" data-curri-level="초3">초3<span></span></td><td data-level="RisingStar초4" class="borderright" data-curri-stg="RisingStar" data-curri-level="초4">초4</td><td data-level="AllStar초5" class=" bgred" data-curri-stg="AllStar" data-curri-level="초5">초5<span></span></td><td data-level="AllStar초6" class="borderright" data-curri-stg="AllStar" data-curri-level="초6">초6</td><td data-level="MVP예비중" class="borderright" data-curri-stg="MVP" data-curri-level="예비중">예비중</td><td data-level="중고등1" class="" data-curri-stg="중고등" data-curri-level="1">1<span></span></td><td data-level="중고등2" class="" data-curri-stg="중고등" data-curri-level="2">2<span></span></td><td data-level="중고등3" class="" data-curri-stg="중고등" data-curri-level="3">3<span></span></td><td data-level="중고등4" class="" data-curri-stg="중고등" data-curri-level="4">4<span></span></td><td data-level="중고등5" class="" data-curri-stg="중고등" data-curri-level="5">5<span></span></td><td data-level="중고등6" class="" data-curri-stg="중고등" data-curri-level="6">6<span></span></td><td data-level="중고등7" class="" data-curri-stg="중고등" data-curri-level="7">7<span></span></td><td data-level="중고등8" class="" data-curri-stg="중고등" data-curri-level="8">8<span></span></td><td data-level="중고등9" class="" data-curri-stg="중고등" data-curri-level="9">9</td></tr></table></div></dd></dl></div></div><div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd><div style="width:300px; height:260px;"><div class="v12gs n2"><div class="v12g"><div id="ce4_pg_s1" style="width:100%; height:130px;"></div></div><div class="v12g"><div id="ce4_pg_s2" style="width:100%; height:130px;"></div></div></div></div></dd></dl></div><div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd><div class="graph_wrap" style="height:280px"><div id="ce4_pg_pos" style="width:100%;height:260px;"></div></div><div class="arert_wrap visib" id="positionText" style="visibility: visible;"><span style="width: 31px;"></span>문법 기준 <b>All-Star 초5</b> 단계부터 학습을 시작하세요.<br>초4 응시자 중 <b>상위 36%</b>로, <b>평균 구간</b>이에요.</div></dd></dl></div></div></div></div></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('ce4_pg_s1','파닉스',83.3,'#ef7c00');v12Gauge('ce4_pg_s2','문법',80,'#7b5aa3');v12Bell("ce4_pg_pos",35.6);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></div><div class="tabpane" data-t="p2" style="display:none"><section class="mk_page"><div id="header"><div class="yGnb_wrap yGnbreport_wrap"><div><h4 class="type_eval"></h4></div><div class="reportInfo_wrap"><p class="day">2026.07.14</p><div>진단평가 리포트</div><dl><dd><span>이름</span><span>예시 학생 G</span></dd><dd><span>학년</span><span>초등 4</span></dd></dl></div></div></div><div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa"><div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span><span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><dd><div class="cds" style="max-width:614px;margin-left:auto;margin-right:auto;"><div class="cd" style="--c:#ef7c00"><div class="hd"><span class="nm">파닉스</span></div><div class="lv">기타자음</div><div class="mb"><i class="fill" style="width:71.4%"></i><i class="av" style="left:50.0%"></i></div><div class="rw"><span>정답률</span><b>83.3%</b><small>10 / 12문항</small></div></div><div class="cd" style="--c:#7b5aa3"><div class="hd"><span class="nm">문법</span></div><div class="lv">All-Star 초5</div><div class="mb"><i class="fill" style="width:31.2%"></i><i class="av" style="left:21.9%"></i></div><div class="rw"><span>정답률</span><b>80%</b><small>8 / 10문항</small></div></div></div></dd></dl><div class="pboxes g4" style="grid-template-columns:repeat(2,1fr);max-width:614px;margin-left:auto;margin-right:auto;"><div class="pbox c-p" style="grid-column:span 1"><b>장모음까지 잘 이해하고 있네요.</b><p>연속자음(fr, gr, br, pr, fl, gl, bl, pl)부터 파닉스 학습을 꾸준히 이어가세요.</p></div><div class="pbox c-g" style="grid-column:span 1"><b>초등 필수 문법을 완성하는 것이 필요합니다.</b><p>초등 문법의 기본기를 완성하여 읽기, 쓰기에 적용하는 능력을 길러보세요.</p></div></div></div></div></div></div><div class="mk_dots"><i></i><i class="on"></i><i></i><i></i><i></i></div></section></div></div><div class="tabpane" id="prpane" data-t="pr" style="display:none"><section class="mk_print"><div class="wrap printerv3" id="printTest" style="overflow-x : hidden;"><div class="y_printer_area" style="display:none"></div><header><section class="header_1"><img src="https://leveltest.yoons.com/images/icon/printer_logo_1.png" class="logo"><div class="title">윤선생 진단평가 리포트</div><div class="day" id="reportDate">2025.08.27</div></section><section class="header_2"><dl class="center"><dt>센터</dt><dd id="headerBm">배플리</dd></dl><dl class="name"><dt>이름</dt><dd id="reportName">예시 학생 A</dd></dl><dl class="class"><dt>학년</dt><dd id="reportYear">초등 4</dd></dl></section></header><section class="bodyarea"><dl class="sec_1"><dt class="contitle">나에게 맞는 학습 시작점</dt><dd><div class="level" id="spnLevel" style="width: 20%; font-size: 117%;">Rising Star 초4</div><div class="tableLayout_wrap" style="width: calc(80% - 10px);"><table data-1-level id="tblBEFLLevelTOBE"><colgroup><col width="*"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="6%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"><col width="5.8%"></colgroup><tr><th rowspan="2" style="width: unset;">YES&nbsp;4.0</th><th colspan="2">Rookie</th><th colspan="2">Rising&nbsp;Star</th><th colspan="2">All-Star</th><th colspan="1">MVP</th><th colspan="9">중고등</th></tr><tr class="height30"><td data-level="Rookie초1" class="" data-curri-stg="Rookie" data-curri-level="초1">초1<span></span></td><td data-level="Rookie초2" class="borderright" data-curri-stg="Rookie" data-curri-level="초2">초2</td><td data-level="RisingStar초3" class="" data-curri-stg="RisingStar" data-curri-level="초3">초3<span></span></td><td data-level="RisingStar초4" class="borderright bgred" data-curri-stg="RisingStar" data-curri-level="초4">초4</td><td data-level="AllStar초5" class="" data-curri-stg="AllStar" data-curri-level="초5">초5<span></span></td><td data-level="AllStar초6" class="borderright" data-curri-stg="AllStar" data-curri-level="초6">초6</td><td data-level="MVP예비중" class="borderright" data-curri-stg="MVP" data-curri-level="예비중">예비중</td><td data-level="중고등1" class="" data-curri-stg="중고등" data-curri-level="1">1<span></span></td><td data-level="중고등2" class="" data-curri-stg="중고등" data-curri-level="2">2<span></span></td><td data-level="중고등3" class="" data-curri-stg="중고등" data-curri-level="3">3<span></span></td><td data-level="중고등4" class="" data-curri-stg="중고등" data-curri-level="4">4<span></span></td><td data-level="중고등5" class="" data-curri-stg="중고등" data-curri-level="5">5<span></span></td><td data-level="중고등6" class="" data-curri-stg="중고등" data-curri-level="6">6<span></span></td><td data-level="중고등7" class="" data-curri-stg="중고등" data-curri-level="7">7<span></span></td><td data-level="중고등8" class="" data-curri-stg="중고등" data-curri-level="8">8<span></span></td><td data-level="중고등9" class="" data-curri-stg="중고등" data-curri-level="9">9</td></tr></table></div></dd></dl><dl class="sec_2"><dt class="contitle">나의 영역별 점수</dt><dd></dd><div style="width:250px; height:260px; padding-top:15px; float:left;"><div class="v12gs n4"><div class="v12g"><div id="divChartScore1" style="width:100%; height:120px;"></div></div><div class="v12g"><div id="divChartScore2" style="width:100%; height:120px;"></div></div><div class="v12g"><div id="divChartScore3" style="width:100%; height:120px;"></div></div><div class="v12g"><div id="divChartScore4" style="width:100%; height:120px;"></div></div></div></div><div class="graph_wrap" style="width : calc(100% - 270px); margin-left : 10px; float : left;"><div id="divPositionArea" style="height : 230px; width : 100%;"></div></div><dt class="contitle" style="left : 280px;">동학년 대비 나의 위치</dt><dd><div class="arert_wrap" id="positionText" style="font-size:12px; font-weight:700; height:auto; min-height:48px;"><span></span><b>읽기/쓰기</b>가 듣기/말하기보다 낮은 <b>Rising Star 초4</b> 단계라, 이 단계부터 시작하세요.<br>초4 응시자 중 <b>상위 42%</b>로, <b>평균 구간</b>이에요.</div></dd></dl><dl class="sec_3 v12sec3"><dt class="contitle">영역별 진단·처방<span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></dt><div class="cds"><div class="cd" style="--c:#ef7c00"><div class="hd2">파닉스</div><div class="lv">장모음</div><div class="mb"><i class="fill" style="width:57.1%"></i><i class="av" style="left:50.0%"></i></div><div class="rw"><span>정답률</span><b>75%</b><small>9 / 12문항</small></div></div><div class="cd" style="--c:#0a953d"><div class="hd2">듣기/말하기</div><div class="lv">All-Star 초6</div><div class="mb"><i class="fill" style="width:37.5%"></i><i class="av" style="left:28.1%"></i></div><div class="rw"><span>정답률</span><b>84.6%</b><small>11 / 13문항</small></div></div><div class="cd" style="--c:#0078bf"><div class="hd2">읽기/쓰기</div><div class="lv">Rising Star 초4</div><div class="mb"><i class="fill" style="width:25.0%"></i><i class="av" style="left:21.9%"></i></div><div class="rw"><span>정답률</span><b>60%</b><small>6 / 10문항</small></div></div><div class="cd" style="--c:#7b5aa3"><div class="hd2">문법</div><div class="lv">All-Star 초5</div><div class="mb"><i class="fill" style="width:31.2%"></i><i class="av" style="left:21.9%"></i></div><div class="rw"><span>정답률</span><b>70%</b><small>7 / 10문항</small></div></div></div><div class="boxes"><div class="info_area orange"><div>장모음까지 잘 이해하고 있네요.</div><div>연속자음(fr, gr, br, pr, fl, gl, bl, pl)부터 파닉스 학습을 꾸준히 이어가세요.</div></div><div class="info_area green"><div>공교육 기준 초등 4~5학년 수준으로, 듣기/말하기 실력은 우수하나 읽기/쓰기 능력이 다소 취약합니다.</div><div>다양한 이야기를 통해 읽기 유창성을 기르는 것이 필요합니다. 읽은 내용을 바탕으로 생각을 정리하고 논리적으로 글을 쓰는 훈련도 시작해보세요.</div></div><div class="info_area purple"><div>초등 필수 문법을 완성하는 것이 필요합니다.</div><div>초등 문법의 기본기를 완성하여 읽기, 쓰기에 적용하는 능력을 길러보세요.</div></div></div></dl></section></div><script>
+(function(){
+  var CURVE=[[0,6],[10,8],[20,16],[30,37],[40,80],[50,93],[60,80],[70,37],[80,16],[90,8],[100,6]]; // 현행 등급기준 곡선 데이터(고정)
+  function yOn(x){ for(var i=1;i<CURVE.length;i++){ if(x<=CURVE[i][0]){ var a=CURVE[i-1],b=CURVE[i]; return a[1]+(b[1]-a[1])*(x-a[0])/(b[0]-a[0]); } } return CURVE[CURVE.length-1][1]; }
+  window.v12Gauge=function(id,name,score,color){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:30,borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[score],dataLabels:{format:'<div style="width:60px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:29px">{y}점</span></div>'}}]});
+  };
+  // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
+  window.v12Bell=function(id,pos){
+    var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
+    Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
+      xAxis:[
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+         plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
+        {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
+         labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
+        {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+      yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
+             {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
+             {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
+      plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
+      series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
+              {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+  };
+})();</script><script>v12Gauge('divChartScore1','파닉스',75,'#ef7c00');v12Gauge('divChartScore2','듣기/말하기',84.6,'#0a953d');v12Gauge('divChartScore3','읽기/쓰기',60,'#0078bf');v12Gauge('divChartScore4','문법',70,'#7b5aa3');v12Bell("divPositionArea",41.8);</script></section></div><script>var curS='e4_all',curT='p1';function show(){document.querySelectorAll('.spane').forEach(function(s){s.style.display=(s.dataset.s===curS&&curT!=='pr')?'':'none';});document.querySelectorAll('.spane .tabpane').forEach(function(t){t.style.display=t.dataset.t===curT?'':'none';});document.getElementById('prpane').style.display=curT==='pr'?'':'none';document.querySelectorAll('.mk_bar a[data-s]').forEach(function(a){a.classList.toggle('on',a.dataset.s===curS)});document.querySelectorAll('.mk_bar a[data-t]').forEach(function(a){a.classList.toggle('on',a.dataset.t===curT)});window.dispatchEvent(new Event('resize'));}document.querySelectorAll('.mk_bar a[data-s]').forEach(function(a){a.onclick=function(e){e.preventDefault();curS=a.dataset.s;if(curT==='pr')curT='p1';show();}});document.querySelectorAll('.mk_bar a[data-t]').forEach(function(a){a.onclick=function(e){e.preventDefault();curT=a.dataset.t;show();}});</script></body></html>
