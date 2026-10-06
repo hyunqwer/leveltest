@@ -91,7 +91,7 @@ body{background:#fff;}
     Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
       pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#e6e6e6',shape:'arc',borderColor:'#e6e6e6',outerRadius:'90%',innerRadius:'90%'}},
       yAxis:{min:0,max:100,minColor:color,maxColor:color,lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
-      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:(small?26:30),borderWidth:0,useHTML:true},animation:false}},
+      plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:(small?32:37),borderWidth:0,useHTML:true},animation:false}},
       credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
       series:[{name:'',data:[score],dataLabels:{format:'<div style="width:72px;text-align:center;margin-left:-6px"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:'+(small?'24':'27')+'px">{y}점</span><br/><span style="font-size:'+(small?'9':'10')+'px;color:#999;line-height:'+(small?'10':'12')+'px;letter-spacing:-.2px">'+kn+'</span></div>'}}]});
   };
