@@ -47,7 +47,7 @@ body{background:#eee;margin:0}
 .prt .arert b{color:#e64545;font-weight:700}
 .prt .arert::before{content:'';flex:none;width:18px;height:18px;border-radius:50%;background:#333 url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path fill='%23fff' d='M9 21h6v-1H9v1zm3-19a7 7 0 0 0-4 12.7V17h8v-2.3A7 7 0 0 0 12 2z'/></svg>") center/12px no-repeat}
 /* 카드 */
-.prt .cds{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.prt .cds{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .prt .cd{padding:16px 12px 14px;border:1px solid #e0e0e0;border-top:3px solid var(--c);border-radius:4px}
 .prt .cd .hd2{display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--c);height:16px}
 .prt .cd .tg{display:inline-block;margin-left:5px;padding:0 4px;height:14px;line-height:11px;border-radius:3px;font-size:8px;font-weight:700;background:#fff;color:#e64545;border:1.5px solid #e64545}
@@ -59,8 +59,8 @@ body{background:#eee;margin:0}
 .prt .cd .rw{display:flex;align-items:baseline;gap:4px;margin-top:16px;padding-top:14px;padding-bottom:10px;border-top:1px dashed #e6e6e6;font-size:10px;color:#888;white-space:nowrap}
 .prt .cd .rw span{flex:none;min-width:26px;margin-right:2px}.prt .cd .rw b{font-size:14px;font-weight:800;color:#333}.prt .cd .rw b.pos{color:#e64545}.prt .cd .rw small{font-size:9.5px;color:#999}
 /* 하단 박스 */
-.prt .pboxes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:16px;flex:1;max-height:230px}
-.prt .pbox{display:flex;flex-direction:column;justify-content:flex-start;padding:16px 14px;border:1.5px solid var(--bc);border-radius:5px;background:var(--bg);font-size:12.5px;line-height:1.75;color:#444}
+.prt .pboxes{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:32px;flex:none}
+.prt .pbox{display:flex;flex-direction:column;justify-content:flex-start;padding:16px 14px 36px;border:1.5px solid var(--bc);border-radius:5px;background:var(--bg);font-size:12.5px;line-height:1.75;color:#444}
 .prt .pbox.c-lr{grid-column:span 2}.prt .pbox b{display:block;margin-bottom:3px;font-size:11.5px;color:var(--bc)}
 .prt .c-p{--bc:#ef7c00;--bg:#fff7ee}.prt .c-lr{--bc:#2e9e5b;--bg:#eef9f1}.prt .c-g{--bc:#7b5aa3;--bg:#f3eef9}
 .prt .sumbox{margin-top:14px;padding:14px 18px;border:1.5px solid #c9d3e0;border-radius:5px;background:#f4f7fb;font-size:12.5px;line-height:1.8;color:#444}
@@ -102,7 +102,7 @@ def page(variant):
             f'<div class="arert"><span>{gr} 응시자 중 <b>{g.ptxt(S["pos"])}</b>로, <b>{g.band(S["pos"])} 구간</b>이에요. <b>{S["start"]["level"]}</b> 단계 <b>{NM[by]}</b> 영역 교재부터 학습을 시작하세요.</span></div></div></div>'
             '<p class="st">영역별 진단·처방<span class="lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span></p><div class="cds">'+''.join(card_p(a) for a in 'PLRG')+'</div>'
             +bottom+
-            '<p class="foot">※ 동학년 대비 위치는 전국 동학년 응시자 기준이며, 2페이지 처방 문구는 '+('현행 샘플(자리표시)' if variant=='c1' else '현행 샘플(자리표시)')+'입니다.</p></div>')
+            '</div>')
 for v,title in (('c1','v9'),):
     html=(f'<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>진단평가 리포트 v10 — 인쇄용</title>'
           f'<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700;900&display=swap"><style>{PRT_CSS}</style></head><body>{page(v)}</body></html>')

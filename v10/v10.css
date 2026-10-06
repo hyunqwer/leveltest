@@ -186,3 +186,14 @@ body{background:#fff;}
 /* 정답률 한 줄 버전: 카드 높이 유지 */
 .rpt_v10 .cd .mb{margin:30px 0 14px;}
 .rpt_v10 .cd .rw{margin-top:18px;padding-top:16px;padding-bottom:12px;}
+/* 미리보기 2: 처방 박스 = 본문 + 한 줄 여유, 카드-박스 간격 2배(32px), 남는 높이는 카드가 흡수 */
+.rpt_v10 .p2.v2c .pboxes{flex:none;margin-top:32px;}
+.rpt_v10 .p2.v2c .pboxes .pbox{justify-content:flex-start;padding:16px 18px 38px;}
+.rpt_v10 .p2.v2c dl{flex:1;display:flex;flex-direction:column;}
+.rpt_v10 .p2.v2c dd{flex:1;display:flex;}
+.rpt_v10 .cds{flex:1;align-items:stretch;}
+.rpt_v10 .cd{display:flex;flex-direction:column;padding:18px 16px 16px;}
+.rpt_v10 .cd .lv{margin-top:12px;font-size:22px;}
+.rpt_v10 .cd .mb{margin:auto 0;height:14px;}
+.rpt_v10 .cd .rw{margin-top:0;padding-top:16px;padding-bottom:2px;font-size:12.5px;}
+.rpt_v10 .cd .rw b{font-size:18px;}
