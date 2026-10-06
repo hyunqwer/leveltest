@@ -124,15 +124,11 @@ def start_parts(tid):
         return [st['level']], f'{NM[st["by"]]} 기준', yes_table(tid,st['cell'])
     return ['파닉스 '+st['level']], cue_other, ph_table(tid+'P',st['level'])
 def start_sentence():
-    """1줄째: 시작 단계 안내. 영역은 듣말·읽쓰 단계가 다를 때만 언급(동단계면 단계만)."""
+    """v11과 같은 문장 구조. 듣말·읽쓰 동단계일 때만 영역 언급 없이 '첫 교재부터'."""
     st=S['start']; b=st['by']; lv=st['level']
-    if b=='P': return f'파닉스 <b>{lv}</b> 단계부터 학습을 시작하세요.'
-    if b=='G': return f'문법 기준 <b>{lv}</b> 단계부터 학습을 시작하세요.'
-    if st['tie']: return f'듣기/말하기·읽기/쓰기 모두 <b>{lv}</b> 수준이라, 이 단계 처음부터 시작하세요.'
-    if st['both']:
-        other=NM['R' if b=='L' else 'L']
-        return f'<b>{NM[b]}</b>가 {other}보다 낮은 <b>{lv}</b> 단계라, 이 단계부터 시작하세요.'
-    return f'{NM[b]} <b>{lv}</b> 단계부터 학습을 시작하세요.'
+    if b=='P': return f'파닉스 <b>{lv}</b> 단계 교재부터 학습을 시작하세요.'
+    if st.get('tie'): return f'<b>{lv}</b> 단계 첫 교재부터 학습을 시작하세요.'
+    return f'<b>{lv}</b> 단계 <b>{NM[b]}</b> 영역 교재부터 학습을 시작하세요.'
 def gauge_divs(prefix,h):
     out=''
     for i,(a,n,c,sc) in enumerate(areas,1):
@@ -143,7 +139,7 @@ def chart_init(prefix,bell_id):
     return f'<script>{CHART_JS}</script><script>{calls}v12Bell("{bell_id}",{pos});</script>'
 def summary():
     gr=S['gr']
-    return (start_sentence()+f'<br>{gr} 응시자 중 <b>{ptxt(pos)}</b>로, <b>{band(pos)} 구간</b>이에요.')
+    return (f'{gr} 응시자 중 <b>{ptxt(pos)}</b>로, <b>{band(pos)} 구간</b>이에요. '+start_sentence())
 def header():
     return (f'<div id="header"><div class="yGnb_wrap yGnbreport_wrap" id="headerWrap"><div style="overflow:hidden"><h4 class="type_eval"></h4><div class="yGnb_common"><dl></dl></div></div>'
             f'<div class="reportInfo_wrap" id="headerReport"><div class="day" id="reportDate">{S["date"]}</div><div id="reportTitle">진단평가 리포트</div><div class="share"></div>'
