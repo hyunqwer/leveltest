@@ -105,18 +105,12 @@ CHART_JS=r'''
 })();'''
 
 # ---------- 영역별 막대그래프 (v13: 현행 2p 막대 구성 복원, 학년 평균 = 동학년 응시자 측정단계 평균) ----------
-# 측정단계 → 수준 경계(기준표 v3): 초1~초6 = 1~6, MVP 예비중 6.5, 중고등 1~9 = 7, 7.5, 8, 8.5, 9, 9.5, 10, 10.3, 10.7
-LV=[(1,'초1'),(2,'초2'),(3,'초3'),(4,'초4'),(5,'초5'),(6,'초6'),(6.5,'예비중'),(7,'중고1'),(7.5,'중고2'),(8,'중고3'),(8.5,'중고4'),(9,'중고5'),(9.5,'중고6'),(10,'중고7'),(10.3,'중고8'),(10.7,'중고9'),(11.1,'')]
+# 세로축 = 학년(초1~고3 = 1~12, 현행 2p와 동일). 내 수준·학년 평균 막대 = 측정단계 값(학년 단위 소수점, 3p 문항별 측정단계와 같은 값)
+GRADE_LAB=['초1','초2','초3','초4','초5','초6','중1','중2','중3','고1','고2','고3']
+GRADE_NO={'초등 1':1,'초등 2':2,'초등 3':3,'초등 4':4,'초등 5':5,'초등 6':6,'중등 1':7,'중등 2':8,'중등 3':9,'고등 1':10,'고등 2':11,'고등 3':12}
 # 학년 평균 측정단계(진단평가_응시데이터_추출_260928 기준 동학년 응시자 평균; 파닉스는 최빈 단계)
 AVG_STAGE={'초등 1':{'L':3.1,'R':2.8,'G':2.3,'P':'장모음'},'초등 3':{'L':4.3,'R':3.8,'G':3.1,'P':'장모음'},'초등 4':{'L':5.0,'R':4.5,'G':4.3,'P':'장모음'},
            '초등 6':{'L':7.0,'R':6.2,'G':6.1,'P':'단모음'},'중등 1':{'L':8.1,'R':7.5,'G':7.2,'P':'Intermediate'},'고등 1':{'L':8.8,'R':8.4,'G':8.0,'P':'Intermediate'}}
-GRADE_LV={'초등 1':0,'초등 2':1,'초등 3':2,'초등 4':3,'초등 5':4,'초등 6':5,'중등 1':7,'중등 2':9,'중등 3':11,'고등 1':13,'고등 2':14,'고등 3':15}
-def lv_pos(v):
-    """측정단계 값 → 수준 사다리 위 연속 위치(수준 i의 시작=i, 다음 수준 시작=i+1)"""
-    for i in range(len(LV)-1):
-        b0,b1=LV[i][0],LV[i+1][0]
-        if v<b1: return i+max(0,(v-b0))/(b1-b0)
-    return len(LV)-1
 def bar_legend():
     return '<span class="lg v13lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span>'
 def bar_card(a,h,print_=False):
@@ -125,8 +119,11 @@ def bar_card(a,h,print_=False):
         ph=S['ph']; ticks=[(i+1,n) for i,n in enumerate(ph)]; lo,hi=0.5,len(ph)+0.5
         me=ph.index(x['stage'])+1; avl=AVG_STAGE[g]['P']; av=ph.index(avl)+1; me_lab=x['stage']; av_lab=avl; reach=x['stage']
     else:
-        nlv=7 if print_ else 9; gi=GRADE_LV[g]; lo_i=max(0,gi-1); lo_i=min(lo_i,len(LV)-1-nlv); ticks=[(i,LV[i][1]) for i in range(lo_i,lo_i+nlv)]; lo,hi=lo_i,lo_i+nlv
-        me=lv_pos(float(x['stage'])); avv=AVG_STAGE[g][a]; av=lv_pos(avv); me_lab=f'{float(x["stage"]):.1f}'; av_lab=f'{avv:.1f}'; reach=x['level']
+        gn=GRADE_NO[g]; lo_g=max(1,gn-1)                       # 학년 한 칸 아래부터
+        hi_g=12 if not print_ else min(12,lo_g+7)                # 2p는 고3까지, 인쇄는 8칸
+        if print_ and hi_g-lo_g<7: lo_g=max(1,hi_g-7)
+        ticks=[(i,GRADE_LAB[i-1]) for i in range(lo_g,hi_g+1)]; lo,hi=lo_g-0.5,hi_g+0.5
+        me=float(x['stage']); avv=AVG_STAGE[g][a]; av=avv; me_lab=f'{me:.1f}'; av_lab=f'{avv:.1f}'; reach=x['level']
     W=186 if print_ else 204; L=46; top=14; bot=6; ph_=h-top-bot
     def Y(v): return top+ph_*(1-(v-lo)/(hi-lo))
     fs=10 if print_ else 11; vfs=11 if print_ else 12
