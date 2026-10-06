@@ -74,12 +74,12 @@ body{background:#fff;}
 .rpt_v10 .cd.bc .hd{height:20px;font-size:13px;margin-bottom:8px;}
 .rpt_v10 .cd.bc .ft{margin-top:8px;padding-top:8px;border-top:1px dashed #e6e6e6;text-align:center;font-size:11px;color:#888;}
 .rpt_v10 .cd.bc .ft b{font-size:15px;font-weight:800;margin-left:6px;letter-spacing:-.3px;}
-.rpt_v10 .p2 dt .lg.v13lg i.me{width:9px;height:9px;border-radius:50%;background:#555;}
-.rpt_v10 .p2 dt .lg.v13lg i.av{width:9px;height:9px;border:0;border-radius:50%;background:#ccc;}
+.rpt_v10 .p2 dt .lg.v13lg i.me{width:16px;height:10px;border-radius:1px;background:linear-gradient(to right,#ef7c00 0 25%,#0a953d 25% 50%,#0078bf 50% 75%,#7b5aa3 75%);}
+.rpt_v10 .p2 dt .lg.v13lg i.av{width:10px;height:10px;border:0;border-radius:1px;background:#d4d4d4;}
 /* 인쇄 */
 .printerv3 .v13sec3 .cd.bc{min-height:0;padding:10px 8px 8px;}
 .printerv3 .v13sec3 .cd.bc .hd{display:flex;align-items:center;font-size:11px;font-weight:700;color:var(--c);height:16px;margin-bottom:4px;}
 .printerv3 .v13sec3 .cd.bc .ft{margin-top:6px;padding-top:6px;border-top:1px dashed #e6e6e6;text-align:center;font-size:10px;color:#888;white-space:nowrap;}
 .printerv3 .v13sec3 .cd.bc .ft b{font-size:13px;font-weight:800;margin-left:5px;}
-.printerv3 .v13sec3 .contitle .lg.v13lg i.me{width:8px;height:8px;border-radius:50%;background:#555;}
-.printerv3 .v13sec3 .contitle .lg.v13lg i.av{width:8px;height:8px;border:0;border-radius:50%;background:#ccc;}
+.printerv3 .v13sec3 .contitle .lg.v13lg i.me{width:14px;height:9px;border-radius:1px;background:linear-gradient(to right,#ef7c00 0 25%,#0a953d 25% 50%,#0078bf 50% 75%,#7b5aa3 75%);}
+.printerv3 .v13sec3 .contitle .lg.v13lg i.av{width:9px;height:9px;border:0;border-radius:1px;background:#d4d4d4;}

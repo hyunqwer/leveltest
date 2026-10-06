@@ -114,7 +114,7 @@ AVG_STAGE={'초등 1':{'L':3.1,'R':2.8,'G':2.3,'P':'장모음'},'초등 3':{'L':
 def bar_legend():
     return '<span class="lg v13lg"><i class="me"></i>내 수준 <i class="av"></i>학년 평균</span>'
 def bar_card(a,h,print_=False):
-    x=S['area'][a]; c=COL[a]; lc=LIGHT[a]; g=S['grade']
+    x=S['area'][a]; c=COL[a]; lc=AVGCOL; g=S['grade']
     if a=='P':
         ph=S['ph']; ticks=[(i+1,n) for i,n in enumerate(ph)]; lo,hi=0.5,len(ph)+0.5
         me=ph.index(x['stage'])+1; avl=AVG_STAGE[g]['P']; av=ph.index(avl)+1; me_lab=x['stage']; av_lab=avl; reach=x['stage']
@@ -133,11 +133,12 @@ def bar_card(a,h,print_=False):
     base=Y(lo); svg+=f'<line x1="{L}" x2="{W-4}" y1="{base:.1f}" y2="{base:.1f}" stroke="#bbb"/>'
     bw=30 if print_ else 34; cx=L+(W-4-L)/2
     for dx,v,lab,fill in ((-bw-7,me,me_lab,c),(7,av,av_lab,lc)):
-        y=Y(v); svg+=f'<rect x="{cx+dx:.1f}" y="{y:.1f}" width="{bw}" height="{max(0,base-y):.1f}" fill="{fill}"/><text x="{cx+dx+bw/2:.1f}" y="{y-4:.1f}" font-size="{vfs}" font-weight="700" fill="#333" text-anchor="middle">{lab}</text>'
+        y=Y(v); tc='#333' if fill==c else '#777'
+        svg+=f'<rect x="{cx+dx:.1f}" y="{y:.1f}" width="{bw}" height="{max(0,base-y):.1f}" fill="{fill}"/><text x="{cx+dx+bw/2:.1f}" y="{y-4:.1f}" font-size="{vfs}" font-weight="700" fill="{tc}" text-anchor="middle">{lab}</text>'
     svg+='</svg>'
     return (f'<div class="cd bc" style="--c:{c}"><div class="hd"><span class="nm">{NM[a]}</span></div>{svg}'
             f'<div class="ft"><span>내 수준</span><b style="color:{c}">{reach}</b></div></div>')
-LIGHT={'P':'#f6d5b5','L':'#c9e6d2','R':'#c6dcec','G':'#d9d0e6'}
+AVGCOL='#d4d4d4'   # 학년 평균 막대: 영역 구분 없이 단일 회색
 # ---------- 공통 조각 ----------
 def yes_table(tid,cell=None):
     cell=cell or S["start"].get("cell")
