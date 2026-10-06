@@ -78,7 +78,7 @@ def yes_table_p():
             f'<tr>{cells}</tr></table></div>')
 def donuts_p():
     out=''
-    for a in 'LRPG':
+    for a in 'PLRG':
         x=S['area'][a]; tg='<b class="tg">시작점 기준</b>' if a==S['start']['by'] else ''
         out+=(f'<div class="dn"><span class="tags">{tg}</span><div class="ring">{g.donut(x["score"],g.COL[a],r=49,w=9)}<div class="ctr"><span class="nm">{NM[a]}</span><strong>{x["score"]:g}점</strong></div></div></div>')
     return f'<div class="dns">{out}</div>'

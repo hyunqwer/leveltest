@@ -40,7 +40,7 @@ def donut(score,col,r=49,w=9):
      f'<circle cx="59" cy="59" r="{r}" fill="none" stroke="{col}" stroke-width="{w}" stroke-linecap="round" stroke-dasharray="{c*score/100:.1f} {c:.1f}" transform="rotate(-90 59 59)"/></svg>')
 def donuts():
     out=''
-    order='LRPG' if ('L' in S['area'] and 'R' in S['area']) else 'PLRG'   # 듣말·읽쓰 응시 시 상단 듣말/읽쓰, 하단 파닉스/문법
+    order='PLRG'   # 상단 파닉스/듣기말하기, 하단 읽기쓰기/문법
     for a in [k for k in order if k in S['area']]:
         x=S['area'][a]; tg='<b class="tg st">시작점 기준</b>' if a==S['start']['by'] else ''
         out+=(f'<div class="dn" style="--c:{COL[a]}"><span class="tags">{tg}</span><div class="ring">{donut(x["score"],COL[a])}<div class="ctr"><span class="nm">{NM[a]}</span><strong>{x["score"]:g}점</strong></div></div></div>')
