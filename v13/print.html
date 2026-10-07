@@ -100,20 +100,20 @@ body{background:#fff;}
     var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';
     Highcharts.chart(id,{chart:{alignTicks:false,animation:false,style:{fontFamily:'inherit'}},title:{text:null},credits:{enabled:false},tooltip:{enabled:false},legend:{enabled:false},exporting:{enabled:false},
       xAxis:[
-        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,10,20,50,80,90,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
+        {title:{text:null},lineColor:'#cccccc',tickColor:'#cccccc',minPadding:0,maxPadding:0,tickPositions:[0,1,20,50,80,100],labels:{enabled:false},reversed:true,allowDecimals:true,min:0,max:100,
          plotLines:[{value:80,color:'#cccccc',width:1,zIndex:1},{value:20,color:'#cccccc',width:1,zIndex:1}]},             // ② 80/20 경계선
         {title:{text:null},opposite:true,gridLineWidth:0,tickWidth:0,lineWidth:0,reversed:true,min:0,max:100,tickPositions:[90,50,10],
          labels:{style:{color:'#999999',fontSize:'0.8rem'},formatter:function(){return {90:'Below Average',50:'Average',10:'Above Average'}[this.value]||'';}}},
         {title:{text:null},min:0,max:100,tickWidth:0,lineWidth:0,labels:{enabled:false},reversed:true,allowDecimals:true,plotBands:[{from:x,to:x,color:'#e64545'}]},
-        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[90,80,50,20,10],min:0,max:100,reversed:true,allowDecimals:true,
-         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금
+        {title:{text:null},tickWidth:0,lineWidth:0,minPadding:0,maxPadding:0,tickPositions:[100,80,50,20,1],min:0,max:100,reversed:true,allowDecimals:true,
+         labels:{y:15,style:{color:'#666666',fontSize:'0.8rem'},formatter:function(){return this.value+'%';}}}],                     // ① % 눈금(100·80·50·20·1)
       yAxis:[{title:{text:null},min:0,max:100,tickInterval:25,lineColor:'#cccccc',tickColor:'#cccccc',gridLineColor:'#cccccc',labels:{enabled:false},allowDecimals:false},
              {title:{text:null},opposite:true,min:0,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}},
              {title:{text:null},min:0,max:100,gridLineWidth:0,lineColor:'#cccccc',tickColor:'#cccccc',labels:{enabled:false}}],
       plotOptions:{series:{animation:false,states:{hover:{enabled:false}}}},
       series:[{name:'등급기준',type:'areaspline',fillColor:'rgba(204, 204, 204, 0.15)',lineColor:'#cccccc',marker:{enabled:false},xAxis:0,yAxis:0,enableMouseTracking:false,data:CURVE},
               {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
-              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[90,0],[80,0],[50,0],[20,0],[10,0]]},
+              {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[100,0],[80,0],[50,0],[20,0],[1,0]]},
               {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
                dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
   };
