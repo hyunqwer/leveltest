@@ -173,7 +173,12 @@ def start_parts(tid):
     st=S['start']; cue_other='메인 커리큘럼 레벨은 듣기/말하기·읽기/쓰기 응시 시 제공'
     if st['by'] in ('L','R','G'):
         return [st['level']], f'{NM[st["by"]]} 기준', yes_table(tid,st['cell'])
-    return ['파닉스 '+st['level']], cue_other, ''   # 파닉스 단계표 없음(현행과 동일) — 파닉스 재검토 시 수정
+    return ['파닉스 '+st['level']], cue_other, ph_row(tid+'P',st['level'])   # 웰스터디 LEVEL 표와 같은 한 줄 표
+def ph_row(tid,stage):
+    """파닉스 단계 한 줄 표 — 현행 웰스터디 tblWellLevel 마크업(data-1-level, th + td.bgred + span 구분선) 그대로"""
+    ph=S['ph']; n=len(ph)
+    tds=''.join(f'<td data-level="{x}" class="{"bgred" if x==stage else ""}" style="display: table-cell;">{x}{"<span></span>" if i<n-1 else ""}</td>' for i,x in enumerate(ph))
+    return f'<table data-1-level id="{tid}"><tbody><tr><th>파닉스</th>{tds}</tr></tbody></table>'
 def start_sentence():
     """v11과 같은 문장 구조. 듣말·읽쓰 동단계일 때만 영역 언급 없이 '첫 교재부터'."""
     st=S['start']; b=st['by']; lv=st['level']
