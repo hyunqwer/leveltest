@@ -96,6 +96,15 @@ body{background:#fff;}
       credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
       series:[{name:'',data:[score],dataLabels:{format:'<div style="width:72px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:'+(small?'24':'27')+'px">{y}점</span><br/><span style="font-size:'+(small?'9':'10')+'px;color:#999;line-height:'+(small?'10':'12')+'px;letter-spacing:-.2px">'+kn+'</span></div>'}}]});
   };
+  // 읽쓰 미완(8문항 미만): 회색 빈 링 + '미완료' (점수·문항 수 없음)
+  window.v14GrayGauge=function(id,name,small){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#ececec',shape:'arc',borderColor:'#ececec',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:'#ececec',maxColor:'#ececec',lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:'#ececec',borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:(small?29:33),borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[0],dataLabels:{format:'<div style="width:72px;text-align:center"><span style="font-size:0.825rem;color:#aaa;">'+name+'</span><br/><span style="font-size:1.0rem;color:#bbb;line-height:'+(small?'24':'27')+'px;font-weight:700">미완료</span><br/><span style="font-size:'+(small?'9':'10')+'px;color:#ccc;line-height:'+(small?'10':'12')+'px">&nbsp;</span></div>'}}]});
+  };
   // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
   window.v14Bell=function(id,pos){
     var x=Math.min(pos,90), lab=(pos>80)?'상위 80% 이하':'상위 '+Math.round(pos)+'%';

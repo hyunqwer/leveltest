@@ -60,7 +60,7 @@ def convert(raw,key):
     names={'e4_all':'예시 학생 A','e1_plr':'예시 학생 B','e6_all_low':'예시 학생 C','m1_lrg':'예시 학생 D','h1_all':'예시 학생 E','e3_p':'예시 학생 F','e4_pg':'예시 학생 G'}
     return {'key':key,'name':names.get(key,'예시 학생'),'grade':g,'gr':GR[g],'date':raw['date'],'combo':raw['combo'],'mid':mid,'ph':ph,'start':start,'area':area,'pos':raw['pos'],'pos_basis':raw.get('pos_basis',''),'inc':raw.get('inc'),'inc_note':raw.get('inc_note','')},avg
 SAMPLES=json.load(open(os.path.join(HERE,'samples.json'),encoding='utf-8'))
-TABS=[('e4_all','초4 전 영역'),('e1_plr','초1 파닉스+듣말+읽쓰'),('e6_all_low','초6 전 영역·평균 이하'),('m1_lrg','중1 듣말+읽쓰+문법'),('h1_all','고1 전 영역'),('e3_p','초3 파닉스만'),('e4_pg','초4 파닉스+문법'),('e5_g','초5 문법만'),('e1_p_inc','초1 P완료·듣말완료·읽쓰 미완'),('m1_g_inc','중1 G완료·듣말완료·읽쓰 미완'),('e4_pg_inc','초4 P·G완료·듣말완료·읽쓰 미완'),('ls_none','듣말완료·읽쓰 미완 (P·G 없음) → 리포트 미전송')]
+TABS=[('e4_all','초4 전 영역'),('e1_plr','초1 파닉스+듣말+읽쓰'),('e6_all_low','초6 전 영역·평균 이하'),('m1_lrg','중1 듣말+읽쓰+문법'),('h1_all','고1 전 영역'),('e3_p','초3 파닉스만'),('e4_pg','초4 파닉스+문법'),('e5_g','초5 문법만'),('e1_pl_inc','초1 파닉스·듣말 완료·읽쓰 미완'),('e4_pl_inc','초4 파닉스·듣말 완료·읽쓰 미완'),('ls_none','듣말완료·읽쓰 미완 (P·G 없음) → 리포트 미전송')]
 S=None; AVG=None; pos=None; by=None; areas=None
 def set_sample(key):
     global S,AVG,pos,by,areas
@@ -80,6 +80,15 @@ CHART_JS=r'''
       plotOptions:{solidgauge:{borderColor:color,borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:(small?29:33),borderWidth:0,useHTML:true},animation:false}},
       credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
       series:[{name:'',data:[score],dataLabels:{format:'<div style="width:72px;text-align:center"><span style="font-size:0.825rem;color:#666;">'+name+'</span><br/><span style="font-size:1.3rem;color:#333;line-height:'+(small?'24':'27')+'px">{y}점</span><br/><span style="font-size:'+(small?'9':'10')+'px;color:#999;line-height:'+(small?'10':'12')+'px;letter-spacing:-.2px">'+kn+'</span></div>'}}]});
+  };
+  // 읽쓰 미완(8문항 미만): 회색 빈 링 + '미완료' (점수·문항 수 없음)
+  window.v14GrayGauge=function(id,name,small){
+    Highcharts.chart(id,{chart:{type:'solidgauge',backgroundColor:'transparent',animation:false,style:{fontFamily:'inherit'}},title:null,
+      pane:{size:'100%',background:{borderWidth:10,backgroundColor:'#ececec',shape:'arc',borderColor:'#ececec',outerRadius:'90%',innerRadius:'90%'}},
+      yAxis:{min:0,max:100,minColor:'#ececec',maxColor:'#ececec',lineWidth:0,tickWidth:0,minorTickLength:0,labels:{enabled:false}},
+      plotOptions:{solidgauge:{borderColor:'#ececec',borderWidth:10,radius:90,innerRadius:'90%',dataLabels:{y:(small?29:33),borderWidth:0,useHTML:true},animation:false}},
+      credits:{enabled:false},tooltip:{enabled:false},exporting:{enabled:false},
+      series:[{name:'',data:[0],dataLabels:{format:'<div style="width:72px;text-align:center"><span style="font-size:0.825rem;color:#aaa;">'+name+'</span><br/><span style="font-size:1.0rem;color:#bbb;line-height:'+(small?'24':'27')+'px;font-weight:700">미완료</span><br/><span style="font-size:'+(small?'9':'10')+'px;color:#ccc;line-height:'+(small?'10':'12')+'px">&nbsp;</span></div>'}}]});
   };
   // pos: 종합 위치(상위 %). 변경점: ① x축 눈금/라벨 등급→% ② Below/Average 경계선 80/20 ③ 80% 초과 시 마커 90 고정·"상위 80% 이하"
   window.v14Bell=function(id,pos){
@@ -164,7 +173,7 @@ def start_parts(tid):
     st=S['start']; cue_other='메인 커리큘럼 레벨은 듣기/말하기·읽기/쓰기 응시 시 제공'
     if st['by'] in ('L','R','G'):
         return [st['level']], f'{NM[st["by"]]} 기준', yes_table(tid,st['cell'])
-    return ['파닉스 '+st['level']], cue_other, ph_table(tid+'P',st['level'])
+    return ['파닉스 '+st['level']], cue_other, ''   # 파닉스 단계표 없음(현행과 동일) — 파닉스 재검토 시 수정
 def start_sentence():
     """v11과 같은 문장 구조. 듣말·읽쓰 동단계일 때만 영역 언급 없이 '첫 교재부터'."""
     st=S['start']; b=st['by']; lv=st['level']
@@ -172,31 +181,34 @@ def start_sentence():
     if st.get('tie'): return f'<b>{lv}</b> 단계 첫 교재부터 학습을 시작하세요.'
     return f'<b>{lv}</b> 단계 <b>{NM[b]}</b> 영역 교재부터 학습을 시작하세요.'
 # ---------- v14: 시작점 섹션명 3종 / 1p 안내 박스 ----------
-NOTE_INC='듣기/말하기·읽기/쓰기 영역 시험을 끝까지 풀지 않았습니다. 정확한 진단을 위해 재시험을 권장합니다.'
-NOTE_ASK={'G':'문법 영역만 응시했습니다. 정확한 진단을 위해 듣기/말하기·읽기/쓰기 영역 응시를 권장합니다.',
-          'PG':'파닉스·문법 영역만 응시했습니다. 정확한 진단을 위해 듣기/말하기·읽기/쓰기 영역 응시를 권장합니다.'}
+NOTE_INC='듣기/말하기 읽기/쓰기 영역을 끝까지 풀지 않아 시작점에 반영되지 않았습니다. 정확한 진단을 위해 재시험을 권장합니다.'
 def start_title():
     """듣말·읽쓰 완료 → 나에게 맞는 학습 시작점 / 문법만·파닉스+문법 → 문법 학습 시작점 / 파닉스만 → 파닉스 학습 시작점"""
-    if 'L' in S['area'] or 'R' in S['area']: return '나에게 맞는 학습 시작점'
+    if 'L' in S['area'] and 'R' in S['area']: return '나에게 맞는 학습 시작점'
     return '나에게 맞는 문법 학습 시작점' if 'G' in S['area'] else '나에게 맞는 파닉스 학습 시작점'
 def notice_text():
-    """원그래프 아래 안내: 듣말·읽쓰 불완전 → 재시험 안내(우선), 그 외 문법만·파닉스+문법 → 응시 권유, 파닉스만·듣말읽쓰 완료 → 없음"""
-    if S.get('inc'): return NOTE_INC
-    combo=''.join(a for a in 'PG' if a in S['area']) if not ('L' in S['area'] or 'R' in S['area']) else ''
-    return NOTE_ASK.get(combo,'')
+    """원그래프 아래 안내: 듣말·읽쓰 단위 불완전(완료 영역이 있어 리포트가 나가는 경우)에만. 문법만·파닉스+문법·파닉스만은 정상 응시 → 안내 없음"""
+    return NOTE_INC if S.get('inc') else ''
 def notice_box(print_=False):
     """현행 1p #abnormal 박스 마크업·인라인 스타일 그대로(evaluationResult_001.html). 인쇄용에는 현행에 없음 → 미출력"""
     t=notice_text()
     if not t or print_: return ''
     return ('<div class="visib" id="abnormal" style="width:100%;height: auto;border:1px solid #7cb5ec;border-radius:5px;font-size:0.850rem;color:#333;background-color:#ebf4fc;line-height: 25px;margin-top:20px;position:relative;padding: 5px 20px;min-height: 35px;visibility: visible;">'
             f'<span style="float:left;width:50px; height:50px; background:url(\'{HOST}/images/icon/arert_icon_3.png\') no-repeat;background-size:60%; position:absolute; top:1px; left:-16px;"></span>{t}</div>')
+def gauge_list():
+    """원그래프 목록: 결과 반영 영역 + (듣말 완료·읽쓰 미완이면) 읽쓰 회색 '미완료' 링. 순서 P·L·R·G"""
+    out=[]
+    for a in 'PLRG':
+        if a in S['area']: out.append((a,NM[a],COL[a],S['area'][a]['score'],False))
+        elif a=='R' and S.get('inc')=='R' and 'L' in S['area']: out.append((a,NM[a],'#ececec',0,True))
+    return out
 def gauge_divs(prefix,h):
-    out=''
-    for i,(a,n,c,sc) in enumerate(areas,1):
+    gl=gauge_list(); out=''
+    for i,_ in enumerate(gl,1):
         out+=f'<div class="v14g"><div id="{prefix}{i}" style="width:100%; height:{h}px;"></div></div>'
-    return f'<div class="v14gs n{len(areas)}">{out}</div>'
+    return f'<div class="v14gs n{len(gl)}">{out}</div>'
 def chart_init(prefix,bell_id,small=False):
-    calls=''.join(f"v14Gauge('{prefix}{i}','{n}',{sc:g},'{c}','{S['area'][a]['k']} / {S['area'][a]['n']}문항',{'true' if small else 'false'});" for i,(a,n,c,sc) in enumerate(areas,1))
+    calls=''.join((f"v14GrayGauge('{prefix}{i}','{n}',{'true' if small else 'false'});" if gray else f"v14Gauge('{prefix}{i}','{n}',{sc:g},'{c}','{S['area'][a]['k']} / {S['area'][a]['n']}문항',{'true' if small else 'false'});") for i,(a,n,c,sc,gray) in enumerate(gauge_list(),1))
     return f'<script>{CHART_JS}</script><script>{calls}v14Bell("{bell_id}",{pos});</script>'
 def summary():
     gr=S['gr']
@@ -212,7 +224,7 @@ def page1():
     return ('<div class="rep"><div class="content"><div class="slide_pa">'
             '<div class="asidetop_wrap'+(' v14dual' if 'by2' in S['start'] else '')+'" id="levelBox"><div class="level_section"><dl><dt><span class="title visib" style="visibility: visible;">'+start_title()+'</span> '
             +''.join(f'<span class="level visib" style="width: unset; visibility: visible;">{b}</span>' for b in badges)+'</dt>'
-            f'<dd><div class="tableLayout_wrap">{tbl}</div></dd></dl></div></div>'
+            +(f'<dd><div class="tableLayout_wrap">{tbl}</div></dd>' if tbl else '<dd><div class="tableLayout_wrap" style="height:62px"></div></dd>')+'</dl></div></div>'   # 파닉스만: 표 자리만 비움(레이아웃 유지)
             '<div class="asidebottom_wrap"><div class="achiev_section"><dl><dt><span class="title visib" style="visibility: visible;">나의 영역별 점수</span></dt><dd>'
             f'<div style="width:300px; height:{gbox}px;">{gauge_divs("divChartScore",130)}</div>{notice_box()}</dd></dl></div>'
             '<div class="position_section"><dl><dt><span class="title visib" style="visibility: visible;">동학년 대비 나의 위치</span></dt><dd>'
@@ -261,7 +273,10 @@ def page2():
     cls={'P':'c-p','LR':'c-lr','G':'c-g'}
     # 하단 처방 박스 폭 = 상단 카드 묶음 폭(1~2개: 300px 카드, 3개: 25% 카드 3장 + 간격 2개), 가운데 정렬
     narrow=('max-width:%dpx;margin-left:auto;margin-right:auto;'%(n*300+(14 if n==2 else 0))) if n<=2 else ('max-width:calc(75% - 3.5px);margin-left:auto;margin-right:auto;' if n==3 else '')
-    bx=(f'<div class="pboxes g4" style="grid-template-columns:repeat({n},1fr);{narrow}">'+''.join(f'<div class="pbox {cls[k]}" style="grid-column:span {span[k]}"><b>{BOX[k][0]}</b><p>{BOX[k][1]}</p></div>' for k in keys)+'</div>')
+    def pbox(k):
+        if k=='LR' and S.get('inc')=='R': return f'<div class="pbox {cls[k]}" style="grid-column:span {span[k]}"><b>{NOTE_INC}</b></div>'   # 읽쓰 미완: 진단문구 자리에 안내문(볼드)만
+        return f'<div class="pbox {cls[k]}" style="grid-column:span {span[k]}"><b>{BOX[k][0]}</b><p>{BOX[k][1]}</p></div>'
+    bx=(f'<div class="pboxes g4" style="grid-template-columns:repeat({n},1fr);{narrow}">'+''.join(pbox(k) for k in keys)+'</div>')
     body=(f'<div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span>'+bar_legend()+'</dt><dd><div class="cds v14bars">'+cards+'</div></dd></dl>'+bx+'</div>')
     return f'<div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa">{body}</div></div></div>'
 # ---------- 파일 ----------
@@ -285,7 +300,7 @@ if __name__=='__main__':
         p1=f'<section class="mk_page">{header()}{page1()}{dots1}</section>'.replace('divChartScore',f'c{key}_s').replace('divPositionArea',f'c{key}_pos').replace('id="abnormal"',f'id="ab{key}"').replace('id="tblBEFLLevelTOBE','id="t'+key)
         p2=f'<section class="mk_page">{v10.header(S["name"],S["grade"],S["date"])}{page2()}{dots2}</section>'
         pages[key]=(label,p1,p2)
-    set_sample(os.environ.get('PRINT_KEY','e4_all'))   # 인쇄용은 초4 전 영역 1종 (검증용으로 PRINT_KEY 지정 가능)
+    set_sample('e4_all')   # 인쇄용은 초4 전 영역 1종만(다른 조합·불완전 케이스는 인쇄용 시안 없음)
     pr=f'<section class="mk_print">{page_print()}</section>'
     label,p1,p2=pages['e4_all']
     open(os.path.join(OUT,'1p.html'),'w',encoding='utf-8').write(doc('진단평가 리포트 v14 — 1p',p1,cur='1p.html'))

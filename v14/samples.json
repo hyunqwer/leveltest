@@ -303,10 +303,10 @@
   "pos": 13.5,
   "pos_basis": "G단독(v3)"
  },
- "e1_p_inc": {
+ "e1_pl_inc": {
   "date": "2025.07.28",
   "grade": "초등 1",
-  "combo": "P",
+  "combo": "PL",
   "area": {
    "P": {
     "scale": 9,
@@ -316,6 +316,15 @@
     "score": 75.0,
     "k": 9,
     "n": 12
+   },
+   "L": {
+    "scale": 5,
+    "stage": 2.5,
+    "level": "Rookie 초2",
+    "pos": 69.3,
+    "score": 70.0,
+    "k": 7,
+    "n": 10
    }
   },
   "start": {
@@ -323,67 +332,41 @@
    "level": "단모음"
   },
   "pos": 69.3,
-  "pos_basis": "P단독(v3)",
-  "inc": "LR",
-  "inc_note": "듣말 10/10 완료, 읽쓰 4/10에서 종료(예시)"
+  "pos_basis": "LS+P(예시값)",
+  "inc": "R",
+  "inc_note": "파닉스·듣말 완료, 읽쓰 4/10에서 종료(예시)"
  },
- "m1_g_inc": {
-  "date": "2025.06.16",
-  "grade": "중등 1",
-  "combo": "G",
-  "area": {
-   "G": {
-    "scale": 10,
-    "stage": 6.4,
-    "level": "MVP 예비중",
-    "pos": 88.0,
-    "score": 30.0,
-    "k": 3,
-    "n": 10
-   }
-  },
-  "start": {
-   "by": "G",
-   "level": "MVP 예비중"
-  },
-  "pos": 88.0,
-  "pos_basis": "G단독(v3)",
-  "inc": "LR",
-  "inc_note": "듣말 12/12 완료, 읽쓰 7/12에서 종료(예시)"
- },
- "e4_pg_inc": {
-  "date": "2026.07.14",
+ "e4_pl_inc": {
+  "date": "2025.08.27",
   "grade": "초등 4",
-  "combo": "PG",
+  "combo": "PL",
   "area": {
    "P": {
-    "scale": 12,
-    "stage": "기타자음",
+    "scale": 9,
+    "stage": "장모음",
     "level": "Intermediate",
-    "pos": 37.3,
-    "score": 83.3,
-    "k": 10,
+    "pos": 73.3,
+    "score": 75.0,
+    "k": 9,
     "n": 12
    },
-   "G": {
-    "scale": 5,
-    "stage": 5.4,
-    "level": "All Star 초5",
-    "pos": 32.2,
-    "score": 80.0,
-    "k": 8,
-    "n": 10
+   "L": {
+    "scale": 20,
+    "stage": 6.2,
+    "level": "All Star 초6",
+    "pos": 14.9,
+    "score": 84.6,
+    "k": 11,
+    "n": 13
    }
   },
   "start": {
    "by": "P",
-   "level": "기타자음",
-   "by2": "G",
-   "level2": "All Star 초5"
+   "level": "장모음"
   },
-  "pos": 35.6,
-  "pos_basis": "B_P+G",
-  "inc": "LR",
-  "inc_note": "파닉스·문법 완료, 듣말 완료, 읽쓰 5/10에서 종료(예시)"
+  "pos": 44.0,
+  "pos_basis": "LS+P(예시값)",
+  "inc": "R",
+  "inc_note": "파닉스·듣말 완료, 읽쓰 6/10에서 종료(예시)"
  }
 }
