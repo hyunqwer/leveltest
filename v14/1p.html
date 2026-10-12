@@ -116,6 +116,6 @@ body{background:#fff;}
               {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
               {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[100,0],[80,0],[50,0],[20,0],[1,0]]},
               {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
-               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:(yOn(x)>=75?36:-25),x:0,useHTML:true,formatter:function(){return lab;}}}]});
   };
 })();</script><script>v14Gauge('ce4_all_s1','파닉스',75,'#ef7c00','9 / 12문항',false);v14Gauge('ce4_all_s2','듣기/말하기',84.6,'#0a953d','11 / 13문항',false);v14Gauge('ce4_all_s3','읽기/쓰기',60,'#0078bf','6 / 10문항',false);v14Gauge('ce4_all_s4','문법',70,'#7b5aa3','7 / 10문항',false);v14Bell("ce4_all_pos",41.8);</script><div class="mk_dots"><i class="on"></i><i></i><i></i><i></i><i></i></div></section></body></html>

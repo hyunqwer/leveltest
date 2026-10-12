@@ -101,14 +101,21 @@ CHART_JS=r'''
               {name:'라벨',type:'scatter',marker:{enabled:false},xAxis:1,yAxis:1,data:[[90,0],[50,0],[10,0]]},
               {name:'%',type:'scatter',marker:{enabled:false},xAxis:3,yAxis:0,data:[[100,0],[80,0],[50,0],[20,0],[1,0]]},
               {name:'나의 위치',type:'scatter',color:'#ff0000',marker:{symbol:'circle',lineWidth:2,lineColor:'#fff',fillColor:'#e64545'},xAxis:2,yAxis:2,data:[[x,yOn(x)]],
-               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:-25,x:0,useHTML:true,formatter:function(){return lab;}}}]});
+               dataLabels:{enabled:true,overflow:'none',crop:false,shape:'callout',backgroundColor:'#e64545',style:{textOutline:0},color:'#fff',borderWidth:0,borderRadius:15,y:(yOn(x)>=75?36:-25),x:0,useHTML:true,formatter:function(){return lab;}}}]});
   };
 })();'''
 
 # ---------- 영역별 막대그래프 (v14: 현행 2p 막대 구성 복원, 학년 평균 = 동학년 응시자 측정단계 평균) ----------
-# 세로축 = 학년(초1~고3 = 1~12, 현행 2p와 동일). 내 수준·학년 평균 막대 = 측정단계 값(학년 단위 소수점, 3p 문항별 측정단계와 같은 값)
+# 세로축 = 현행 2p Highcharts 설정 그대로(evaluationResult_001.js yAxisLabelsNotP): y 0~8 고정, 눈금 1~8 = 초3·초5·초6·중1·중2·중3·고1·고3,
+# 학년→y값: 초1 0.3, 초2 0.6, 초3 1.0, 초4 1.5, 초5 2.0, 초6 3.0, 중1 4.0, 중2 5.0, 중3 6.0, 고1 7.0, 고2 7.5, 고3 8.0 (현행은 정수 학년만 찍음 → v14는 측정단계 소수점을 구간 안에서 선형 보간)
+GRADE_VAL=[0.3,0.6,1.0,1.5,2.0,3.0,4.0,5.0,6.0,7.0,7.5,8.0]   # index 0 = 초1 … 11 = 고3
 GRADE_LAB=['초1','초2','초3','초4','초5','초6','중1','중2','중3','고1','고2','고3']
-GRADE_NO={'초등 1':1,'초등 2':2,'초등 3':3,'초등 4':4,'초등 5':5,'초등 6':6,'중등 1':7,'중등 2':8,'중등 3':9,'고등 1':10,'고등 2':11,'고등 3':12}
+Y_TICKS=[(1,'초3'),(2,'초5'),(3,'초6'),(4,'중1'),(5,'중2'),(6,'중3'),(7,'고1'),(8,'고3')]
+def stage_to_y(v):
+    """측정단계(학년 단위 소수점) → 현행 y값. 정수부는 valLabel, 소수부는 다음 학년 valLabel까지 선형 보간"""
+    v=max(1.0,min(12.0,float(v))); g=int(v); f=v-g
+    lo=GRADE_VAL[g-1]; hi=GRADE_VAL[g] if g<12 else GRADE_VAL[11]
+    return lo+(hi-lo)*f
 # 학년 평균 측정단계(진단평가_응시데이터_추출_260928 기준 동학년 응시자 평균; 파닉스는 최빈 단계)
 AVG_STAGE={'초등 1':{'L':3.1,'R':2.8,'G':2.3,'P':'장모음'},'초등 3':{'L':4.3,'R':3.8,'G':3.1,'P':'장모음'},'초등 4':{'L':5.0,'R':4.5,'G':4.3,'P':'장모음'},
            '초등 5':{'L':6.3,'R':5.4,'G':5.6,'P':'단모음'},'초등 6':{'L':7.0,'R':6.2,'G':6.1,'P':'단모음'},'중등 1':{'L':8.1,'R':7.5,'G':7.2,'P':'Intermediate'},'고등 1':{'L':8.8,'R':8.4,'G':8.0,'P':'Intermediate'}}
@@ -117,17 +124,15 @@ def bar_legend():
 def bar_card(a,h,print_=False):
     x=S['area'][a]; c=COL[a]; lc=AVGCOL; g=S['grade']
     if a=='P':
-        ph=S['ph']; ticks=[(i+1,n) for i,n in enumerate(ph)]; lo,hi=0.5,len(ph)+0.5
+        ph=S['ph']; ticks=[(i+1,n) for i,n in enumerate(ph)]; lo,hi=0,len(ph)          # 현행 파닉스 축: 0~7(중고등 0~4), 눈금 1~
         me=ph.index(x['stage'])+1; avl=AVG_STAGE[g]['P']; av=ph.index(avl)+1; me_lab=x['stage']; av_lab=avl; reach=x['stage']
     else:
-        gn=GRADE_NO[g]; lo_g=max(1,gn-1)                       # 학년 한 칸 아래부터
-        hi_g=12 if not print_ else min(12,lo_g+7)                # 2p는 고3까지, 인쇄는 8칸
-        if print_ and hi_g-lo_g<7: lo_g=max(1,hi_g-7)
-        ticks=[(i,GRADE_LAB[i-1]) for i in range(lo_g,hi_g+1)]; lo,hi=lo_g-0.5,hi_g+0.5
-        me=float(x['stage']); avv=AVG_STAGE[g][a]; av=avv; me_lab=f'{me:.1f}'; av_lab=f'{avv:.1f}'; reach=x['level']
-    W=186 if print_ else 204; L=46; top=14; bot=6; ph_=h-top-bot
+        ticks=Y_TICKS; lo,hi=0,8                                   # 현행과 동일한 고정 축(0~8)
+        me=stage_to_y(x['stage']); avv=AVG_STAGE[g][a]; av=stage_to_y(avv); me_lab=f'{float(x["stage"]):.1f}'; av_lab=f'{avv:.1f}'; reach=x['level']
+    W=186 if print_ else 204; L=(64 if (a=='P' and S.get('mid')) else 46); top=14; bot=6; ph_=h-top-bot
     def Y(v): return top+ph_*(1-(v-lo)/(hi-lo))
     fs=10 if print_ else 11; vfs=11 if print_ else 12
+    if a=='P': vfs=(8 if S.get('mid') else 10) if print_ else (9 if S.get('mid') else 11)   # 단계명 라벨은 숫자보다 길어 축소
     svg=f'<svg viewBox="0 0 {W} {h}" width="{W}" height="{h}" style="display:block;margin:0 auto;overflow:visible">'
     for v,n in ticks:
         y=Y(v); svg+=f'<line x1="{L}" x2="{W-4}" y1="{y:.1f}" y2="{y:.1f}" stroke="#e9e9e9"/><text x="{L-5}" y="{y+3.5:.1f}" font-size="{fs}" fill="#888" text-anchor="end">{n}</text>'
@@ -254,7 +259,8 @@ def page2():
     keys=[k for k,need in (('P',['P']),('LR',['L','R']),('G',['G'])) if any(a in S['area'] for a in need)]
     span={'P':1,'LR':sum(1 for a in 'LR' if a in S['area']),'G':1}
     cls={'P':'c-p','LR':'c-lr','G':'c-g'}
-    narrow=('max-width:%dpx;margin-left:auto;margin-right:auto;'%(n*300+(14 if n==2 else 0))) if n<=2 else ''
+    # 하단 처방 박스 폭 = 상단 카드 묶음 폭(1~2개: 300px 카드, 3개: 25% 카드 3장 + 간격 2개), 가운데 정렬
+    narrow=('max-width:%dpx;margin-left:auto;margin-right:auto;'%(n*300+(14 if n==2 else 0))) if n<=2 else ('max-width:calc(75% - 3.5px);margin-left:auto;margin-right:auto;' if n==3 else '')
     bx=(f'<div class="pboxes g4" style="grid-template-columns:repeat({n},1fr);{narrow}">'+''.join(f'<div class="pbox {cls[k]}" style="grid-column:span {span[k]}"><b>{BOX[k][0]}</b><p>{BOX[k][1]}</p></div>' for k in keys)+'</div>')
     body=(f'<div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span>'+bar_legend()+'</dt><dd><div class="cds v14bars">'+cards+'</div></dd></dl>'+bx+'</div>')
     return f'<div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa">{body}</div></div></div>'
