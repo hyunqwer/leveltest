@@ -274,7 +274,7 @@ def gray_card(a,h):
     base=Y(lo); svg+=f'<line x1="{L}" x2="{W-4}" y1="{base:.1f}" y2="{base:.1f}" stroke="#ddd"/>'
     svg+=f'<text x="{L+(W-4-L)/2:.1f}" y="{Y(4)+5:.1f}" font-size="14" font-weight="700" fill="#bbb" text-anchor="middle">미완료</text></svg>'
     return (f'<div class="cd bc gray" style="--c:#cfcfcf"><div class="hd"><span class="nm" style="color:#aaa">{NM[a]}</span></div>{svg}'
-            f'<div class="ft"><span>내 수준</span><b style="color:#bbb">미완료</b></div></div>')
+            f'<div class="ft">&nbsp;</div></div>')   # 아래 줄은 비움(높이 맞춤용), 상태는 가운데 "미완료" 한 번만
 def page2():
     inc=(S.get('inc')=='R' and 'L' in S['area'])
     pres=[a for a in 'PLRG' if a in S['area'] or (a=='R' and inc)]; n=len(pres)   # 읽쓰 미완이면 회색 카드 포함
