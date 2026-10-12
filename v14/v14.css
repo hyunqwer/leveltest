@@ -84,3 +84,6 @@ body{background:#fff;}
 .printerv3 .v14sec3 .contitle .lg.v14lg i.me{width:14px;height:9px;border-radius:1px;background:linear-gradient(to right,#ef7c00 0 25%,#0a953d 25% 50%,#0078bf 50% 75%,#7b5aa3 75%);}
 .printerv3 .v14sec3 .contitle .lg.v14lg i.av{width:9px;height:9px;border:0;border-radius:1px;background:#d4d4d4;}
 
+
+/* 2p 읽쓰 미완 회색 카드 */
+.rpt_v10 .cd.bc.gray{border-top-color:#cfcfcf;background:#fafafa;}

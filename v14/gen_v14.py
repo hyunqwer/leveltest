@@ -264,12 +264,24 @@ def page_print():
             f'<div class="cds">{cards_print()}</div><div class="boxes">{boxes}</div></dl>'
             '</section></div>'+chart_init('divChartScore','divPositionArea',small=True))
 # ---------- 2p (v14: 영역별 막대그래프 + v10 처방 박스) ----------
+def gray_card(a,h):
+    """읽쓰 미완(듣말 완료): 2p에도 회색 빈 카드 — 축만 그리고 막대 없음, 가운데 '미완료'"""
+    W=204; L=46; top=14; bot=6; ph_=h-top-bot; lo,hi=0,8
+    def Y(v): return top+ph_*(1-(v-lo)/(hi-lo))
+    svg=f'<svg viewBox="0 0 {W} {h}" width="{W}" height="{h}" style="display:block;margin:0 auto;overflow:visible">'
+    for v,n in Y_TICKS:
+        y=Y(v); svg+=f'<line x1="{L}" x2="{W-4}" y1="{y:.1f}" y2="{y:.1f}" stroke="#eeeeee"/><text x="{L-5}" y="{y+3.5:.1f}" font-size="11" fill="#bbb" text-anchor="end">{n}</text>'
+    base=Y(lo); svg+=f'<line x1="{L}" x2="{W-4}" y1="{base:.1f}" y2="{base:.1f}" stroke="#ddd"/>'
+    svg+=f'<text x="{L+(W-4-L)/2:.1f}" y="{Y(4)+5:.1f}" font-size="14" font-weight="700" fill="#bbb" text-anchor="middle">미완료</text></svg>'
+    return (f'<div class="cd bc gray" style="--c:#cfcfcf"><div class="hd"><span class="nm" style="color:#aaa">{NM[a]}</span></div>{svg}'
+            f'<div class="ft"><span>내 수준</span><b style="color:#bbb">미완료</b></div></div>')
 def page2():
-    pres=[a for a in 'PLRG' if a in S['area']]; n=len(pres)
-    cards=''.join(bar_card(a,200) for a in pres)
+    inc=(S.get('inc')=='R' and 'L' in S['area'])
+    pres=[a for a in 'PLRG' if a in S['area'] or (a=='R' and inc)]; n=len(pres)   # 읽쓰 미완이면 회색 카드 포함
+    cards=''.join((gray_card(a,200) if (a=='R' and inc) else bar_card(a,200)) for a in pres)
     if n<=2: cards=cards.replace('class="cd bc" style="','class="cd bc" style="flex:0 0 300px;')
     keys=[k for k,need in (('P',['P']),('LR',['L','R']),('G',['G'])) if any(a in S['area'] for a in need)]
-    span={'P':1,'LR':sum(1 for a in 'LR' if a in S['area']),'G':1}
+    span={'P':1,'LR':sum(1 for a in 'LR' if a in S['area'])+(1 if inc else 0),'G':1}   # 회색 읽쓰 카드까지 2칸
     cls={'P':'c-p','LR':'c-lr','G':'c-g'}
     # 하단 처방 박스 폭 = 상단 카드 묶음 폭(1~2개: 300px 카드, 3개: 25% 카드 3장 + 간격 2개), 가운데 정렬
     narrow=('max-width:%dpx;margin-left:auto;margin-right:auto;'%(n*300+(14 if n==2 else 0))) if n<=2 else ('max-width:calc(75% - 3.5px);margin-left:auto;margin-right:auto;' if n==3 else '')
