@@ -70,7 +70,11 @@ body{background:#fff;}
 /* v14: 2p 영역별 막대그래프 카드 */
 .rpt_v10 .cds.v14bars{display:flex;justify-content:center;gap:14px;}
 .rpt_v10 .cds.v14bars .cd.bc{flex:0 0 calc(25% - 10.5px);}
-.rpt_v10 .cd.bc{padding:14px 12px 10px;border-top:3px solid var(--c);}
+.rpt_v10 .cd.bc{box-sizing:border-box;padding:14px 10px 10px;border-top:3px solid var(--c);}
+.rpt_v10 .p2.v2c .pbwrap{margin-left:40px;}  /* dd 좌측 40px 들여쓰기와 맞춰 처방 박스 묶음 = 상단 카드 묶음 폭 */
+.rpt_v10 .p2.v2c .pboxes.g4{box-sizing:border-box;}
+.rpt_v10 .pboxes .pbox{box-sizing:border-box;}
+.achiev_section dd .visib[id^="ab"]{box-sizing:border-box;width:300px;}  /* #abnormal: 원그래프 상자(300px) 폭에 맞춤 */
 .rpt_v10 .cd.bc .hd{height:20px;font-size:13px;margin-bottom:8px;}
 .rpt_v10 .cd.bc .ft{margin-top:8px;padding-top:8px;border-top:1px dashed #e6e6e6;text-align:center;font-size:11px;color:#888;}
 .rpt_v10 .cd.bc .ft b{font-size:15px;font-weight:800;margin-left:6px;letter-spacing:-.3px;}

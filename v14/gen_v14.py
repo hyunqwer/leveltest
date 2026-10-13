@@ -296,7 +296,7 @@ def page2():
     def pbox(k):
         if k=='LR' and S.get('inc')=='R': return f'<div class="pbox {cls[k]}" style="grid-column:span {span[k]}"><b>{NOTE_INC}</b></div>'   # 읽쓰 미완: 진단문구 자리에 안내문(볼드)만
         return f'<div class="pbox {cls[k]}" style="grid-column:span {span[k]}"><b>{BOX[k][0]}</b><p>{BOX[k][1]}</p></div>'
-    bx=(f'<div class="pboxes g4" style="grid-template-columns:repeat({n},1fr);{narrow}">'+''.join(pbox(k) for k in keys)+'</div>')
+    bx=(f'<div class="pbwrap"><div class="pboxes g4" style="grid-template-columns:repeat({n},1fr);{narrow}">'+''.join(pbox(k) for k in keys)+'</div></div>')
     body=(f'<div class="p2 v2c"><dl><dt><span class="title">영역별 진단·처방</span>'+bar_legend()+'</dt><dd><div class="cds v14bars">'+cards+'</div></dd></dl>'+bx+'</div>')
     return f'<div class="rep rpt_v10 p2wrap"><div class="content"><div class="slide_pa">{body}</div></div></div>'
 # ---------- 파일 ----------
