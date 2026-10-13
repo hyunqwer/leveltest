@@ -57,10 +57,10 @@ def convert(raw,key):
     for a,lab in AVG_BY_GRADE[g].items():
         idx=(ph.index(lab) if a=='P' else YES.index(cell_of(lab)))
         avg[a]={'label':lab,'cellpos':idx+0.5}
-    names={'e4_all':'예시 학생 A','e1_plr':'예시 학생 B','e6_all_low':'예시 학생 C','m1_lrg':'예시 학생 D','h1_all':'예시 학생 E','e3_p':'예시 학생 F','e4_pg':'예시 학생 G'}
+    names={'e4_all':'예시 학생 A','e1_plr':'예시 학생 B','e6_all_low':'예시 학생 C','m1_lrg':'예시 학생 D','h1_all':'예시 학생 E','e3_p':'예시 학생 F','e4_pg':'예시 학생 G','m1_p':'예시 학생 H'}
     return {'key':key,'name':names.get(key,'예시 학생'),'grade':g,'gr':GR[g],'date':raw['date'],'combo':raw['combo'],'mid':mid,'ph':ph,'start':start,'area':area,'pos':raw['pos'],'pos_basis':raw.get('pos_basis',''),'inc':raw.get('inc'),'inc_note':raw.get('inc_note',''),'partial':raw.get('partial')},avg
 SAMPLES=json.load(open(os.path.join(HERE,'samples.json'),encoding='utf-8'))
-TABS=[('e4_all','초4 전 영역'),('e1_plr','초1 파닉스+듣말+읽쓰'),('e6_all_low','초6 전 영역·평균 이하'),('m1_lrg','중1 듣말+읽쓰+문법'),('h1_all','고1 전 영역'),('e3_p','초3 파닉스만·부분응답'),('e4_pg','초4 파닉스+문법'),('e5_g','초5 문법만'),('e1_pl_inc','초1 파닉스·듣말 완료·읽쓰 미완'),('e4_pl_inc','초4 파닉스·듣말 완료·읽쓰 미완'),('ls_none','듣말완료·읽쓰 미완 (P·G 없음) → 리포트 미전송')]
+TABS=[('e4_all','초4 전 영역'),('e1_plr','초1 파닉스+듣말+읽쓰'),('e6_all_low','초6 전 영역·평균 이하'),('m1_lrg','중1 듣말+읽쓰+문법'),('h1_all','고1 전 영역'),('e3_p','초3 파닉스만·부분응답'),('m1_p','중1 파닉스만'),('e4_pg','초4 파닉스+문법'),('e5_g','초5 문법만'),('e1_pl_inc','초1 파닉스·듣말 완료·읽쓰 미완'),('e4_pl_inc','초4 파닉스·듣말 완료·읽쓰 미완'),('ls_none','듣말완료·읽쓰 미완 (P·G 없음) → 리포트 미전송')]
 S=None; AVG=None; pos=None; by=None; areas=None
 def set_sample(key):
     global S,AVG,pos,by,areas
@@ -146,8 +146,8 @@ def bar_card(a,h,print_=False):
     for v,n in ticks:
         y=Y(v); svg+=f'<line x1="{L}" x2="{W-4}" y1="{y:.1f}" y2="{y:.1f}" stroke="#e9e9e9"/><text x="{L-5}" y="{y+3.5:.1f}" font-size="{fs}" fill="#888" text-anchor="end">{n}</text>'
     base=Y(lo); svg+=f'<line x1="{L}" x2="{W-4}" y1="{base:.1f}" y2="{base:.1f}" stroke="#bbb"/>'
-    bw=30 if print_ else 34; cx=L+(W-4-L)/2
-    for dx,v,lab,fill in ((-bw-7,me,me_lab,c),(7,av,av_lab,lc)):
+    bw=30 if print_ else 34; cx=L+(W-4-L)/2; gp=(20 if (a=='P' and S.get('mid')) else 7)   # 중고등 파닉스는 단계명이 길어 막대 간격을 넓힘
+    for dx,v,lab,fill in ((-bw-gp,me,me_lab,c),(gp,av,av_lab,lc)):
         y=Y(v); tc='#333' if fill==c else '#777'
         svg+=f'<rect x="{cx+dx:.1f}" y="{y:.1f}" width="{bw}" height="{max(0,base-y):.1f}" fill="{fill}"/><text x="{cx+dx+bw/2:.1f}" y="{y-4:.1f}" font-size="{vfs}" font-weight="700" fill="{tc}" text-anchor="middle">{lab}</text>'
     svg+='</svg>'

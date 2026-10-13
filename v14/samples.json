@@ -371,5 +371,27 @@
   "pos_basis": "LS+P(예시값)",
   "inc": "R",
   "inc_note": "파닉스·듣말 완료, 읽쓰 6/10에서 종료(예시)"
+ },
+ "m1_p": {
+  "date": "2026.09.03",
+  "grade": "중등 1",
+  "combo": "P",
+  "area": {
+   "P": {
+    "scale": 7,
+    "stage": "Intermediate",
+    "level": "Intermediate",
+    "pos": 35.1,
+    "score": 83.3,
+    "k": 5,
+    "n": 6
+   }
+  },
+  "start": {
+   "by": "P",
+   "level": "Intermediate"
+  },
+  "pos": 35.1,
+  "pos_basis": "P단독(v3)"
  }
 }

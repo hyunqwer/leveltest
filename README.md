@@ -16,7 +16,7 @@
 
 ## 폴더별 파일
 
-- **v14/** `index.html`(탭 통합), `1p.html`, `2p.html`, `print.html`, 재생성 `gen_v14.py`, `v14.css`, `v10parts.py`/`v10.css`, `samples.json`(11종), `README.txt`, `changes.html`(현행 대비 변경 사항 통합 가이드, v13 포함 — IT 공유용)
+- **v14/** `index.html`(탭 통합), `1p.html`, `2p.html`, `print.html`, 재생성 `gen_v14.py`, `v14.css`, `v10parts.py`/`v10.css`, `samples.json`(12종), `README.txt`, `changes.html`(현행 대비 변경 사항 통합 가이드, v13 포함 — IT 공유용)
 - **v13/** `index.html`(탭 통합), `1p.html`, `2p.html`, `print.html`, 재생성 `gen_v13.py`, `v13.css`, `v10parts.py`/`v10.css`(처방 박스), `README.txt`
 - **v12/** `index.html`(탭 통합), `1p.html`, `2p.html`, `print.html`, 재생성 `gen_v12.py`, `v12.css`, `v10parts.py`/`v10.css`(2p용), `README.txt`
 - **v11/** `index.html`(탭 통합), `1p.html`, `2p.html`, `print.html`, 재생성 `gen_v11.py`(한 번에 4개 생성), `v11.css`, `v10parts.py`/`v10.css`(2p용), `README.txt`
