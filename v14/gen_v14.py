@@ -173,7 +173,7 @@ def start_parts(tid):
     st=S['start']; cue_other='메인 커리큘럼 레벨은 듣기/말하기·읽기/쓰기 응시 시 제공'
     if st['by'] in ('L','R','G'):
         return [st['level']], f'{NM[st["by"]]} 기준', yes_table(tid,st['cell'])
-    return ['파닉스 '+st['level']], cue_other, ph_row(tid+'P',st['level'])   # 웰스터디 LEVEL 표와 같은 한 줄 표
+    return [st['level']], cue_other, ph_row(tid+'P',st['level'])   # 웰스터디 LEVEL 표와 같은 한 줄 표
 def ph_row(tid,stage):
     """파닉스 단계 한 줄 표 — 현행 웰스터디 tblWellLevel 마크업(data-1-level, th + td.bgred + span 구분선) 그대로"""
     ph=S['ph']; n=len(ph)
