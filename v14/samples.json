@@ -246,7 +246,10 @@
    "level": "장모음"
   },
   "pos": 65.7,
-  "pos_basis": "P단독(v3)"
+  "pos_basis": "P단독(v3)",
+  "partial": [
+   "P"
+  ]
  },
  "e4_pg": {
   "date": "2026.07.14",

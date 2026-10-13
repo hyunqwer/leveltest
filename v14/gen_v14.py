@@ -58,9 +58,9 @@ def convert(raw,key):
         idx=(ph.index(lab) if a=='P' else YES.index(cell_of(lab)))
         avg[a]={'label':lab,'cellpos':idx+0.5}
     names={'e4_all':'예시 학생 A','e1_plr':'예시 학생 B','e6_all_low':'예시 학생 C','m1_lrg':'예시 학생 D','h1_all':'예시 학생 E','e3_p':'예시 학생 F','e4_pg':'예시 학생 G'}
-    return {'key':key,'name':names.get(key,'예시 학생'),'grade':g,'gr':GR[g],'date':raw['date'],'combo':raw['combo'],'mid':mid,'ph':ph,'start':start,'area':area,'pos':raw['pos'],'pos_basis':raw.get('pos_basis',''),'inc':raw.get('inc'),'inc_note':raw.get('inc_note','')},avg
+    return {'key':key,'name':names.get(key,'예시 학생'),'grade':g,'gr':GR[g],'date':raw['date'],'combo':raw['combo'],'mid':mid,'ph':ph,'start':start,'area':area,'pos':raw['pos'],'pos_basis':raw.get('pos_basis',''),'inc':raw.get('inc'),'inc_note':raw.get('inc_note',''),'partial':raw.get('partial')},avg
 SAMPLES=json.load(open(os.path.join(HERE,'samples.json'),encoding='utf-8'))
-TABS=[('e4_all','초4 전 영역'),('e1_plr','초1 파닉스+듣말+읽쓰'),('e6_all_low','초6 전 영역·평균 이하'),('m1_lrg','중1 듣말+읽쓰+문법'),('h1_all','고1 전 영역'),('e3_p','초3 파닉스만'),('e4_pg','초4 파닉스+문법'),('e5_g','초5 문법만'),('e1_pl_inc','초1 파닉스·듣말 완료·읽쓰 미완'),('e4_pl_inc','초4 파닉스·듣말 완료·읽쓰 미완'),('ls_none','듣말완료·읽쓰 미완 (P·G 없음) → 리포트 미전송')]
+TABS=[('e4_all','초4 전 영역'),('e1_plr','초1 파닉스+듣말+읽쓰'),('e6_all_low','초6 전 영역·평균 이하'),('m1_lrg','중1 듣말+읽쓰+문법'),('h1_all','고1 전 영역'),('e3_p','초3 파닉스만·부분응답'),('e4_pg','초4 파닉스+문법'),('e5_g','초5 문법만'),('e1_pl_inc','초1 파닉스·듣말 완료·읽쓰 미완'),('e4_pl_inc','초4 파닉스·듣말 완료·읽쓰 미완'),('ls_none','듣말완료·읽쓰 미완 (P·G 없음) → 리포트 미전송')]
 S=None; AVG=None; pos=None; by=None; areas=None
 def set_sample(key):
     global S,AVG,pos,by,areas
@@ -192,8 +192,11 @@ def start_title():
     if 'L' in S['area'] and 'R' in S['area']: return '나에게 맞는 학습 시작점'
     return '나에게 맞는 문법 학습 시작점' if 'G' in S['area'] else '나에게 맞는 파닉스 학습 시작점'
 def notice_text():
-    """원그래프 아래 안내: 듣말·읽쓰 단위 불완전(완료 영역이 있어 리포트가 나가는 경우)에만. 문법만·파닉스+문법·파닉스만은 정상 응시 → 안내 없음"""
-    return NOTE_INC if S.get('inc') else ''
+    """원그래프 아래 안내: ① 듣말 완료·읽쓰 미완(NOTE_INC) ② 그 외는 현행 부분응답 안내 그대로(기준 이상 풀고 끝까지 안 푼 영역). 미응시 영역에 대한 응시 권유는 없음"""
+    if S.get('inc'): return NOTE_INC
+    if S.get('partial'):   # 기존 부분응답 안내(현행 로직 그대로): 기준 이상 풀었지만 끝까지 풀지 않은 영역
+        return ' '.join(f'{NM[a]} 영역 시험을 끝까지 풀지 않았습니다.' for a in S['partial'])+' 정확한 진단을 위해 재시험을 권장합니다.'
+    return ''
 def notice_box(print_=False):
     """현행 1p #abnormal 박스 마크업·인라인 스타일 그대로(evaluationResult_001.html). 인쇄용에는 현행에 없음 → 미출력"""
     t=notice_text()
